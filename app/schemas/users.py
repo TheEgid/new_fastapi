@@ -26,6 +26,13 @@ class UserBase(BaseModel):
     name: str
 
 
+class UserBaseMeReturned(BaseModel):
+    """ Return response data """
+    user_id: int
+    email: EmailStr
+    name: str
+
+
 class UserCreate(BaseModel):
     """ Validate request data """
     email: EmailStr

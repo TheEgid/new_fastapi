@@ -3,8 +3,7 @@ import random
 import string
 from datetime import datetime, timedelta
 from sqlalchemy import and_
-
-from database import database
+from sqlalchemy.ext.asyncio import AsyncSession
 from models.users import tokens_table, users_table
 from schemas import users as user_schema
 
@@ -16,7 +15,8 @@ def get_random_string(length=12):
 def hash_password(password: str, salt: str = None):
     if salt is None:
         salt = get_random_string()
-    enc = hashlib.pbkdf2_hmac("sha256", password.encode(), salt.encode(), 100_000)
+    enc = hashlib.pbkdf2_hmac("sha256", password.encode(), salt.encode(),
+                              100_000)
     return enc.hex()
 
 
@@ -25,45 +25,51 @@ def validate_password(password: str, hashed_password: str):
     return hash_password(password, salt) == hashed
 
 
-async def get_user(user_id: int):
+async def get_user(user_id: int, session: AsyncSession):
     query = users_table.select().where(users_table.c.id == user_id)
-    return await database.fetch_one(query)
+    return await session.execute(query)
 
 
-async def get_user_by_email(email: str):
+async def get_user_by_email(email: str, session: AsyncSession):
     query = users_table.select().where(users_table.c.email == email)
+    user = await session.execute(query)
+    return user.fetchone()
 
-    return await database.fetch_one(query)
 
-
-async def create_user(user: user_schema.UserCreate):
+async def create_user(user: user_schema.UserCreate, session: AsyncSession):
     salt = get_random_string()
     hashed_password = hash_password(user.password, salt)
     query = users_table.insert().values(
-        email=user.email, name=user.name, hashed_password=f"{salt}${hashed_password}"
+        email=user.email, name=user.name,
+        hashed_password=f"{salt}${hashed_password}"
     )
-    user_id = await database.execute(query)
-    token = await create_user_token(user_id)
+    res = await session.execute(query)
+    await session.commit()
+    user_id = res.inserted_primary_key[0]
+    token = await create_user_token(user_id, session)
     token_dict = {"token": token["token"], "expires": token["expires"]}
+    return {**user.dict(),
+            "id": user_id, "is_active": True, "token": token_dict}
 
-    return {**user.dict(), "id": user_id, "is_active": True, "token": token_dict}
 
-
-async def create_user_token(user_id: int):
+async def create_user_token(user_id: int, session: AsyncSession):
     query = (
-        tokens_table.insert()
-        .values(expires=datetime.now() + timedelta(weeks=2), user_id=user_id)
-        .returning(tokens_table.c.token, tokens_table.c.expires)
+        tokens_table.insert().values(
+            expires=datetime.now() + timedelta(weeks=2),
+            user_id=user_id).returning(
+            tokens_table.c.token, tokens_table.c.expires)
     )
+    token = await session.execute(query)
+    await session.commit()
+    return token.fetchone()
 
-    return await database.fetch_one(query)
 
-
-async def get_user_by_token(token: str):
+async def get_user_by_token(token: str, session: AsyncSession):
     query = tokens_table.join(users_table).select().where(
         and_(
             tokens_table.c.token == token,
             tokens_table.c.expires > datetime.now()
         )
     )
-    return await database.fetch_one(query)
+    user = await session.execute(query)
+    return user.fetchone()

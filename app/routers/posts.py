@@ -8,7 +8,8 @@
 #
 #
 # @router.post("/posts", response_model=PostDetailsModel, status_code=201)
-# async def create_post(post: PostModel, current_user: User = Depends(get_current_user)):
+# async def create_post(post: PostModel,
+# current_user: User = Depends(get_current_user)):
 #     post = await post_utils.create_post(post, current_user)
 #     return post
 #
@@ -27,7 +28,8 @@
 #
 # @router.put("/posts/{post_id}", response_model=PostDetailsModel)
 # async def update_post(
-#         post_id: int, post_data: PostModel, current_user=Depends(get_current_user)
+#         post_id: int, post_data: PostModel,
+#         current_user=Depends(get_current_user)
 # ):
 #     post = await post_utils.get_post(post_id)
 #     if post["user_id"] != current_user["id"]:
