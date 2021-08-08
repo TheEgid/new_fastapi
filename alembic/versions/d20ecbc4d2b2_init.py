@@ -1,8 +1,8 @@
-"""Add users and tokens tables
+"""Init
 
-Revision ID: 223152812b5f
-Revises: cb1409f3e7c2
-Create Date: 2020-07-29 19:08:20.253613
+Revision ID: d20ecbc4d2b2
+Revises: 
+Create Date: 2021-08-08 14:16:24.674480
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision = '223152812b5f'
-down_revision = 'cb1409f3e7c2'
+revision = 'd20ecbc4d2b2'
+down_revision = None
 branch_labels = None
 depends_on = None
 

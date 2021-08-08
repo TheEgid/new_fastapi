@@ -1,23 +1,39 @@
-from logging.config import fileConfig
-
+from environs import Env
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from alembic import context
+from app.models import users
+
+env = Env()
+env.read_env()
+
+DB_USER = env.str("DB_USER")
+DB_PASSWORD = env.str("DB_PASSWORD")
+DB_HOST = env.str("DB_HOST")
+DB_NAME = env.str("DB_NAME")
+
+TESTING = False  # env.str("TESTING")
+
+if TESTING:
+    DB_NAME = f"{DB_NAME}-temp-for-test"
+
+# sync!
+DATABASE_URL = \
+    f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:5432/{DB_NAME}"
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
 
-# Interpret the config file for Python logging.
-# This line sets up loggers basically.
-fileConfig(config.config_file_name)
+config.set_main_option('sqlalchemy.url', DATABASE_URL)
+
 
 # add your model's MetaData object here
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = None
+target_metadata = [users.metadata]
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

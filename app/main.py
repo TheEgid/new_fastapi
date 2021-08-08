@@ -7,7 +7,6 @@ from fastapi.logger import logger
 
 app = FastAPI()
 
-
 origins = [
     "http://localhost",
     "http://localhost:8080",
@@ -19,6 +18,7 @@ app.include_router(users.router)
 
 app.add_middleware(
     middleware_class=CORSMiddleware,
+    allow_credentials=True,
     allow_origins=origins,
     allow_origin_regex="http://localhost:*",
     allow_methods=["*"],
