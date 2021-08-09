@@ -11,7 +11,7 @@ router = APIRouter()
 
 @router.get("/")
 async def health_check():
-    return {"Hello": "World"}
+    return {"Hello": "Hello"}
 
 
 @router.post("/auth", response_model=users.TokenBase)

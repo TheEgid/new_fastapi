@@ -1,6 +1,6 @@
 import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
-from database import get_db_session
+from database import get_db_session, DB_HOST
 from routers import users
 from fastapi import FastAPI
 from fastapi.logger import logger
@@ -38,4 +38,4 @@ async def shutdown_event():
 
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", reload=True, host="localhost", port=8000)
+    uvicorn.run("main:app", reload=True, host=DB_HOST, port=80)
