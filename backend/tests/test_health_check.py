@@ -1,6 +1,11 @@
-from main import app
+import os.path as path
+import sys
 
 from fastapi.testclient import TestClient
+
+sys.path.append(path.abspath(path.join(__file__, "../..")))
+
+from main import app  # noqa: E402
 
 client = TestClient(app)
 
