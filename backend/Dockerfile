@@ -27,5 +27,4 @@ COPY . /opt/services/backend
 
 EXPOSE 80
 
-CMD ["gunicorn", "-c", "gunicorn_conf.py", "--bind", "0.0.0.0:80", "-w", "4", "-k", "uvicorn.workers.UvicornWorker", "main:app"]
-# CMD ["gunicorn", "-c", "config/gunicorn/conf.py", "--bind", ":80", "--chdir", "where_to_go", "wsgi:application"]
+CMD ["gunicorn", "-c", "gunicorn_conf.conf", "--bind", "0.0.0.0:80", "-w", "4", "-k", "uvicorn.workers.UvicornWorker", "main:app"]
