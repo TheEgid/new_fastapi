@@ -1,4 +1,5 @@
 from environs import Env
+import platform
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.orm import declarative_base
@@ -12,7 +13,10 @@ env.read_env()
 
 DB_USER = env.str("DB_USER")
 DB_PASSWORD = env.str("DB_PASSWORD")
-DB_HOST = env.str("DB_HOST")
+
+DB_HOST = env.str("DB_HOST") if \
+    (platform.system() != "Windows") else "localhost"
+
 DB_NAME = env.str("DB_NAME")
 
 TESTING = False  # env.str("TESTING")
@@ -24,7 +28,6 @@ DATABASE_URL = \
     f"postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:5432/{DB_NAME}"
 
 SQLAlchemyBase = declarative_base()
-
 
 engine = create_async_engine(
     DATABASE_URL,

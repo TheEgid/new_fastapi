@@ -1,10 +1,4 @@
-import sys
-import pathlib
 from fastapi.testclient import TestClient
-
-
-sys.path.append(str(pathlib.Path.cwd() / 'backend'))
-
 from main import app  # noqa: E402
 
 client = TestClient(app)

@@ -1,8 +1,9 @@
-# import os
-# import sys
-# import pytest
-#
-#
+import sys
+import pathlib
+
+
+sys.path.append(str(pathlib.Path.cwd()))
+sys.path.append(str(pathlib.Path.cwd() / 'backend'))
 
 # This sets `os.environ`,
 # If we placed it below the application import, it would raise an error

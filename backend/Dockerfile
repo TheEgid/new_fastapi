@@ -2,8 +2,6 @@ FROM python:3.9.6-buster
 
 RUN apt-get update
 
-RUN pip install --upgrade pip
-
 RUN apt-get install -qy \
     apt-utils \
     python3-pip \

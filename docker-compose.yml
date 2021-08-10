@@ -1,7 +1,40 @@
 version: '3.9'
 
 services:
+  database1:
+    image: postgis/postgis:latest
+    restart: on-failure
+    container_name: db_postgres
+    environment:
+      TZ: "Europe/Moscow"
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+      DATABASE_HOST: ${DB_HOST}
+    ports:
+      - "5432:5432"
+    volumes:
+      - database1_volume:/var/lib/postgresql/data
+    networks:
+      - fullstack
+
+  pgadmin:
+    restart: unless-stopped
+    image: dpage/pgadmin4
+    container_name: pgadmin_container
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    depends_on:
+      - database1
+    ports:
+      - "5050:80"
+    networks:
+      - fullstack
+
+
   backend_server:
+    restart: on-failure
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -11,5 +44,14 @@ services:
     env_file:
       - .env
     ports:
-      - 80:80
+      - "80:80"
+    networks:
+      - fullstack
 
+
+volumes:
+  database1_volume:
+
+networks:
+  fullstack:
+    driver: bridge

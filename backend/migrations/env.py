@@ -1,29 +1,13 @@
-from environs import Env
-import os.path as path
-import os
 import sys
-import logging
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 import pathlib
-
 from alembic import context
-
-# BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 sys.path.append(str(pathlib.Path.cwd() / 'backend'))
 
 from models import users  # noqa: E402
-
-env = Env()
-env.read_env()
-
-logger = logging.getLogger("alembic.env")
-
-DB_USER = env.str("DB_USER")
-DB_PASSWORD = env.str("DB_PASSWORD")
-DB_HOST = env.str("DB_HOST")
-DB_NAME = env.str("DB_NAME")
+from database import DB_HOST, DB_NAME, DB_PASSWORD, DB_USER  # noqa: E402
 
 TESTING = False  # env.str("TESTING")
 
