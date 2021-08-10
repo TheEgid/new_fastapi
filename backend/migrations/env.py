@@ -1,12 +1,24 @@
 from environs import Env
+import os.path as path
+import os
+import sys
+import logging
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
+import pathlib
 
 from alembic import context
-from app.models import users
+
+# BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+sys.path.append(str(pathlib.Path.cwd() / 'backend'))
+
+from models import users  # noqa: E402
 
 env = Env()
 env.read_env()
+
+logger = logging.getLogger("alembic.env")
 
 DB_USER = env.str("DB_USER")
 DB_PASSWORD = env.str("DB_PASSWORD")
@@ -28,12 +40,12 @@ config = context.config
 
 config.set_main_option('sqlalchemy.url', DATABASE_URL)
 
-
 # add your model's MetaData object here
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 target_metadata = [users.metadata]
+
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

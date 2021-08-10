@@ -1,9 +1,9 @@
-import os.path as path
 import sys
-
+import pathlib
 from fastapi.testclient import TestClient
 
-sys.path.append(path.abspath(path.join(__file__, "../..")))
+
+sys.path.append(str(pathlib.Path.cwd() / 'backend'))
 
 from main import app  # noqa: E402
 
