@@ -14,7 +14,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./utils.sh:/docker-entrypoint-initdb.d/utils.sh
+      - ./backend/utils.sh:/docker-entrypoint-initdb.d/utils.sh
       - database1_volume:/var/lib/postgresql/data
     networks:
       - fullstack
