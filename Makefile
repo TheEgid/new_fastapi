@@ -11,13 +11,15 @@ export
 all: build
 
 build:
-	docker-compose up #-d
+	docker-compose up -d
 	docker inspect $(DB_CONTAINER) | grep IPAddress
 	docker ps
 	echo "Ok!";
+	#$(COMMAND) "dockerize -wait http://pgadmin:80 -timeout 10s";
+	$(COMMAND) "alembic upgrade head";
 
 backup:
-	docker exec -i $(DB_CONTAINER) pg_dump --username $(DB_USER) $(DB_NAME) > $(LOCAL_DUMP_PATH)
+	#docker exec -i $(DB_CONTAINER) pg_dump --username $(DB_USER) $(DB_NAME) > $(LOCAL_DUMP_PATH)
 
 #restore--
 #psql -d database1 -f '/opt/my_backup.sql'
