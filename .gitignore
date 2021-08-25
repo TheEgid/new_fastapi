@@ -150,19 +150,14 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-/upload/*
-/backend/upload/*
 /frontend/node_modules/
 /.idea/
 
 /frontend/.idea/
-
 .idea/
-.pytest_cache/
-__pycache__/
-venv/
-
-.env
 
 my_backup.txt
 backend/my_backup.txt
+
+/UPLOAD/*
+/backend/UPLOAD/*

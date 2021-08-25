@@ -1,7 +1,7 @@
 import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
 from database import get_db_session, DB_HOST
-from routers import users
+from routers import users, uploads
 from fastapi import FastAPI
 from fastapi.logger import logger
 
@@ -14,6 +14,7 @@ origins = [
 ]
 
 app.include_router(users.router)
+app.include_router(uploads.router)
 # app.include_router(posts.router)
 
 app.add_middleware(
