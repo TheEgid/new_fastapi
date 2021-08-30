@@ -1,12 +1,13 @@
 import React from 'react';
 import Container from 'react-bootstrap/Container';
-import { useSelector, useDispatch } from 'react-redux';
 import Button from 'react-bootstrap/Button';
-import Pokemon from './features/pokemon/Pokemon';
-import { selectbaseViewCondition, switcher } from './features/baseView/baseViewSlice';
+import { useSelector, useDispatch } from 'react-redux';
 import SimpleTable from './features/simpleTable/SimpleTable';
 import Tumbler from './features/tumbler/Tumbler';
 import { selectRowQuantity } from './features/tumbler/tumblerSlice';
+import { selectbaseViewCondition, switcher } from './features/baseView/baseViewSlice';
+import Pokemon from './features/pokemon/Pokemon';
+import FileInputForm from './components/FileInputForm';
 
 import './custom.scss';
 
@@ -32,6 +33,7 @@ const BaseView = () => {
 const App = () => (
   <Container>
     <div>
+      <FileInputForm />
       <BaseView />
       <Pokemon firstName="eevee" />
       <Pokemon firstName="rattata" />
