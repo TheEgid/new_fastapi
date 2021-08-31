@@ -5,15 +5,17 @@ import Form from 'react-bootstrap/Form';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { object, mixed } from 'yup';
+import { useDispatch, useSelector } from 'react-redux';
+import { ofileName, selectFileName } from './fileInputFormSlice';
 
 const schema = object().shape({
   myFile: mixed()
-    .test('fileSize', 'Максимальный размер файла 5 мегабайт', (value) => {
+    .test('fileSize', 'Максимальный размер файла 5 Мбайт', (value) => {
       if (!value.length) return true;
       return value[0].size <= 5242880;
     })
     .test('fileType', 'Неподдерживаемый тип файла', (value) => {
-      if (value) {
+      if (value[0]) {
         return value[0].name.endsWith('pdf') && value[0].type === 'application/pdf';
       }
       return true;
@@ -21,6 +23,9 @@ const schema = object().shape({
 });
 
 const FileInputForm = () => {
+  const selectionFileName = useSelector(selectFileName);
+  const dispatch = useDispatch();
+
   const {
     register,
     handleSubmit,
@@ -30,11 +35,14 @@ const FileInputForm = () => {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = () => {
-    const inputFile = document.getElementById('fileItem').files[0];
-    // eslint-disable-next-line no-console
-    console.log(inputFile);
-    reset();
+  const onSubmit = (e) => {
+    const tfile = e.myFile[0];
+    if (typeof tfile !== 'undefined') {
+      dispatch(ofileName(tfile.name));
+      // eslint-disable-next-line no-console
+      console.log(tfile);
+      reset();
+    }
   };
 
   return (
@@ -55,6 +63,8 @@ const FileInputForm = () => {
           <Button variant="info" type="submit">
             Отправить
           </Button>
+
+          <p> {selectionFileName} </p>
         </Form>
       </Card>
     </div>

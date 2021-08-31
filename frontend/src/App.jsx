@@ -2,12 +2,12 @@ import React from 'react';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import { useSelector, useDispatch } from 'react-redux';
-import SimpleTable from './features/simpleTable/SimpleTable';
-import Tumbler from './features/tumbler/Tumbler';
 import { selectRowQuantity } from './features/tumbler/tumblerSlice';
 import { selectbaseViewCondition, switcher } from './features/baseView/baseViewSlice';
 import Pokemon from './features/pokemon/Pokemon';
-import FileInputForm from './components/FileInputForm';
+import FileInputForm from './features/fileInputForm/FileInputForm';
+import Tumbler from './features/tumbler/Tumbler';
+import SimpleTable from './features/simpleTable/SimpleTable';
 
 import './custom.scss';
 
