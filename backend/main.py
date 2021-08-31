@@ -8,7 +8,8 @@ from fastapi.logger import logger
 app = FastAPI()
 
 origins = [
-    "http://localhost",
+    "http://localhost:3000",
+    "http://http://192.168.1.72:3000",
     "http://localhost:8080",
     "http://localhost:5000",
 ]
@@ -39,4 +40,5 @@ async def shutdown_event():
 
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", reload=True, host=DB_HOST, port=80)
+    uvicorn.run("main:app", reload=True, host='192.168.1.72', port=80)
+   # uvicorn.run("main:app", reload=True, host=DB_HOST, port=80)

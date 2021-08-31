@@ -4,20 +4,22 @@ import { pokemonApi } from '../features/pokemon/pokemonSlice';
 import { simpleTableApi } from '../features/simpleTable/simpleTableSlice';
 import { baseViewSlice } from '../features/baseView/baseViewSlice';
 import { tumblerSlice } from '../features/tumbler/tumblerSlice';
-import { FileInputFormSlice } from '../features/fileInputForm/fileInputFormSlice';
+import { inputApi } from '../features/fileInputForm/fileInputFormSlice';
 
 const store = configureStore({
   reducer: {
     baseViewReduser: baseViewSlice.reducer,
     tumblerReduser: tumblerSlice.reducer,
-    fileInputFormReduser: FileInputFormSlice.reducer,
+    [inputApi.reducerPath]: inputApi.reducer,
     [pokemonApi.reducerPath]: pokemonApi.reducer,
     [simpleTableApi.reducerPath]: simpleTableApi.reducer,
   },
 
-  // eslint-disable-next-line max-len
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(pokemonApi.middleware).concat(simpleTableApi.middleware),
+    getDefaultMiddleware()
+      .concat(pokemonApi.middleware)
+      .concat(simpleTableApi.middleware)
+      .concat(inputApi.middleware),
 });
 
 setupListeners(store.dispatch);

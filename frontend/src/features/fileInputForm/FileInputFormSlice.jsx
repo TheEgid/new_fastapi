@@ -1,17 +1,26 @@
-import { createSlice } from '@reduxjs/toolkit';
-// import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-export const FileInputFormSlice = createSlice({
-  name: 'fileInputFormReduser',
-  initialState: {
-    fileName: '',
-  },
-  reducers: {
-    ofileName: (state, action) => {
-      state.fileName = `Файл: ${action.payload}`;
-    },
-  },
+export const inputApi = createApi({
+  reducerPath: 'inputApi',
+  baseQuery: fetchBaseQuery({
+    baseUrl: 'http://192.168.1.72/',
+  }),
+  endpoints: (builder) => ({
+    AddCustomFile: builder.mutation({
+      query: (body) => ({
+        url: `/api/upload`,
+        method: 'POST',
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          Accept: ' application/json',
+        },
+        body,
+      }),
+    }),
+  }),
 });
 
-export const { ofileName } = FileInputFormSlice.actions;
-export const selectFileName = (state) => state.fileInputFormReduser.fileName;
+export const { useAddCustomFileMutation } = inputApi;
+export const {
+  endpoints: { AddCustomFile },
+} = inputApi;

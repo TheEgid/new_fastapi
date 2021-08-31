@@ -5,8 +5,7 @@ import Form from 'react-bootstrap/Form';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { object, mixed } from 'yup';
-import { useDispatch, useSelector } from 'react-redux';
-import { ofileName, selectFileName } from './fileInputFormSlice';
+import { useAddCustomFileMutation } from './fileInputFormSlice';
 
 const schema = object().shape({
   myFile: mixed()
@@ -23,9 +22,6 @@ const schema = object().shape({
 });
 
 const FileInputForm = () => {
-  const selectionFileName = useSelector(selectFileName);
-  const dispatch = useDispatch();
-
   const {
     register,
     handleSubmit,
@@ -35,12 +31,14 @@ const FileInputForm = () => {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = (e) => {
-    const tfile = e.myFile[0];
+  const [AddCustomFile, { isLoading: isLoadingCustomFile }] = useAddCustomFileMutation();
+
+  const onSubmit = (formValues) => {
+    const tfile = formValues.myFile[0];
     if (typeof tfile !== 'undefined') {
-      dispatch(ofileName(tfile.name));
-      // eslint-disable-next-line no-console
-      console.log(tfile);
+      const formData = new FormData();
+      formData.append('customfile', tfile, tfile.name);
+      AddCustomFile(formData);
       reset();
     }
   };
@@ -62,9 +60,8 @@ const FileInputForm = () => {
           <p>{errors.myFile?.message}</p>
           <Button variant="info" type="submit">
             Отправить
+            {isLoadingCustomFile}
           </Button>
-
-          <p> {selectionFileName} </p>
         </Form>
       </Card>
     </div>
