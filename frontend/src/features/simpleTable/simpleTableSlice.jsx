@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-const mainApiUrl = `${process.env.REACT_APP_MAIN_API_URL}`;
+// const mainApiUrl = `${process.env.REACT_APP_MAIN_API_URL}`;
+const mainApiUrl = `http://www.filltext.com/`;
 
 const urlpart =
   '%7Bnumber%7C1000%7D&firstName=%7BfirstName%7D&lastName=%7BlastName%' +

@@ -14,7 +14,7 @@ env.read_env()
 DB_USER = env.str("DB_USER")
 DB_PASSWORD = env.str("DB_PASSWORD")
 
-DB_HOST = env.str("DB_HOST") if \
+DB_HOST = env.str("REACT_APP_MAIN_API_URL") if \
     (platform.system() != "Windows") else "localhost"
 
 DB_NAME = env.str("DB_NAME")

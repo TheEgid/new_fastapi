@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { object, mixed } from 'yup';
 import { useAddCustomFileMutation } from './fileInputFormSlice';
+import Loader from '../../components/Loader';
 
 const schema = object().shape({
   myFile: mixed()
@@ -31,7 +32,9 @@ const FileInputForm = () => {
     resolver: yupResolver(schema),
   });
 
-  const [AddCustomFile, { isLoading: isLoadingCustomFile }] = useAddCustomFileMutation();
+  const [AddCustomFile, { ...returned }] = useAddCustomFileMutation();
+
+  const isPending = returned.status === 'pending';
 
   const onSubmit = (formValues) => {
     const tfile = formValues.myFile[0];
@@ -43,6 +46,24 @@ const FileInputForm = () => {
     }
   };
 
+  const getResult = (res) => {
+    let returnedData = '';
+    let currentStatus;
+    switch (res.status) {
+      case 'fulfilled':
+        returnedData = res.data.filename;
+        currentStatus = 'Загружен файл ';
+        break;
+      case 'pending':
+        currentStatus = '';
+        break;
+      default:
+        currentStatus = 'Ждём загрузку файла';
+        break;
+    }
+    return `${currentStatus}  ${returnedData}`;
+  };
+
   return (
     <div>
       <Card border="secondary">
@@ -51,6 +72,8 @@ const FileInputForm = () => {
         </Form.Label>
         <Form onSubmit={handleSubmit(onSubmit)}>
           <input
+            disabled={isPending}
+            style={isPending ? { color: `transparent` } : {}}
             className="form-control"
             accept=".pdf"
             id="fileItem"
@@ -58,9 +81,10 @@ const FileInputForm = () => {
             {...register('myFile')}
           />
           <p>{errors.myFile?.message}</p>
-          <Button variant="info" type="submit">
+          {isPending && <Loader />}
+          <p>{getResult(returned)}</p>
+          <Button hidden={isPending} variant="info" type="submit">
             Отправить
-            {isLoadingCustomFile}
           </Button>
         </Form>
       </Card>

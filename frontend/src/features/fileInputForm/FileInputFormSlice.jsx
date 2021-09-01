@@ -1,9 +1,11 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
+const mainApiUrl = `${process.env.REACT_APP_MAIN_API_URL}`;
+
 export const inputApi = createApi({
   reducerPath: 'inputApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://192.168.1.72/',
+    baseUrl: `http://${mainApiUrl}`,
   }),
   endpoints: (builder) => ({
     AddCustomFile: builder.mutation({
@@ -12,7 +14,6 @@ export const inputApi = createApi({
         method: 'POST',
         headers: {
           'Access-Control-Allow-Origin': '*',
-          Accept: ' application/json',
         },
         body,
       }),
@@ -21,6 +22,3 @@ export const inputApi = createApi({
 });
 
 export const { useAddCustomFileMutation } = inputApi;
-export const {
-  endpoints: { AddCustomFile },
-} = inputApi;
