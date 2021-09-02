@@ -4,7 +4,7 @@ import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { object, mixed } from 'yup';
+import { mixed, object } from 'yup';
 import { useAddCustomFileMutation } from './fileInputFormSlice';
 import Loader from '../../components/Loader';
 
@@ -43,6 +43,7 @@ const FileInputForm = () => {
       formData.append('customfile', tfile, tfile.name);
       AddCustomFile(formData);
       reset();
+      returned.status = 'rejected'
     }
   };
 
@@ -56,6 +57,9 @@ const FileInputForm = () => {
         break;
       case 'pending':
         currentStatus = '';
+        break;
+      case 'rejected':
+        currentStatus = 'Ошибка сервера';
         break;
       default:
         currentStatus = 'Ждём загрузку файла';

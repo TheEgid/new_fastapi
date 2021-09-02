@@ -6,7 +6,7 @@ from alembic import context
 
 sys.path.append(str(pathlib.Path.cwd() / 'backend'))
 
-from models import users  # noqa: E402
+from models import users, files  # noqa: E402
 from database import DB_HOST, DB_NAME, DB_PASSWORD, DB_USER  # noqa: E402
 
 TESTING = False  # env.str("TESTING")
@@ -28,7 +28,7 @@ config.set_main_option('sqlalchemy.url', DATABASE_URL)
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = [users.metadata]
+target_metadata = [users.metadata, files.metadata]
 
 
 # other values from the config, defined by the needs of env.py,
