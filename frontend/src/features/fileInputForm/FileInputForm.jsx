@@ -5,7 +5,7 @@ import Form from 'react-bootstrap/Form';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { mixed, object } from 'yup';
-import { useAddCustomFileMutation } from './fileInputFormSlice';
+import { useAddCustomFileMutation, useAddFileDataMutation } from './fileInputFormFileSlice';
 import Loader from '../../components/Loader';
 
 const schema = object().shape({
@@ -32,7 +32,8 @@ const FileInputForm = () => {
     resolver: yupResolver(schema),
   });
 
-  const [AddCustomFile, { ...returned }] = useAddCustomFileMutation();
+  const [AddCustomFile,  { ...returned }] = useAddCustomFileMutation();
+  const [ AddFileData ] = useAddFileDataMutation();
 
   const isPending = returned.status === 'pending';
 
@@ -42,8 +43,15 @@ const FileInputForm = () => {
       const formData = new FormData();
       formData.append('customfile', tfile, tfile.name);
       AddCustomFile(formData);
+      AddFileData({
+        filename: 'super',
+        content_type: 'pooper',
+      });
       reset();
-      returned.status = 'rejected'
+      // eslint-disable-next-line no-console
+
+      returned.status = 'rejected';
+
     }
   };
 
@@ -65,7 +73,13 @@ const FileInputForm = () => {
         currentStatus = 'Ждём загрузку файла';
         break;
     }
-    return `${currentStatus}  ${returnedData}`;
+
+    if (currentStatus === 'Загружен файл ') {
+      // eslint-disable-next-line no-console
+      console.log(returnedData);
+    }
+    // if returnedData ==! "" {console.log(returnedData)}
+    return [currentStatus, returnedData];
   };
 
   return (

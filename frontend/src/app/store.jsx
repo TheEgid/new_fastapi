@@ -4,13 +4,13 @@ import { pokemonApi } from '../features/pokemon/pokemonSlice';
 import { simpleTableApi } from '../features/simpleTable/simpleTableSlice';
 import { baseViewSlice } from '../features/baseView/baseViewSlice';
 import { tumblerSlice } from '../features/tumbler/tumblerSlice';
-import { inputApi } from '../features/fileInputForm/fileInputFormSlice';
+import { fileApi } from '../features/fileInputForm/fileInputFormFileSlice';
 
 const store = configureStore({
   reducer: {
     baseViewReduser: baseViewSlice.reducer,
     tumblerReduser: tumblerSlice.reducer,
-    [inputApi.reducerPath]: inputApi.reducer,
+    [fileApi.reducerPath]: fileApi.reducer,
     [pokemonApi.reducerPath]: pokemonApi.reducer,
     [simpleTableApi.reducerPath]: simpleTableApi.reducer,
   },
@@ -19,7 +19,7 @@ const store = configureStore({
     getDefaultMiddleware()
       .concat(pokemonApi.middleware)
       .concat(simpleTableApi.middleware)
-      .concat(inputApi.middleware),
+      .concat(fileApi.middleware),
 });
 
 setupListeners(store.dispatch);
