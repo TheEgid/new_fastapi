@@ -33,14 +33,14 @@ const FileInputForm = () => {
     resolver: yupResolver(schema),
   });
 
-  const [content, setContent] = useState('');
+  const [content, setContent] = useState();
   const onContentChanged = (e) => setContent(e.target.value);
 
   const [AddCustomFile, { data, status, isLoading }] = useAddCustomFileMutation();
   const [AddFileData] = useAddFileDataMutation();
 
-  const isPending = status === 'pending';
   const canSave = [content].every(Boolean) && !isLoading;
+  const isPending = status === 'pending';
 
   const onUploadFileClicked = async () => {
     const inputFile = getValues('myFile')[0];
@@ -54,12 +54,13 @@ const FileInputForm = () => {
           filename: returned.filename,
           content_type: returned['content-type'],
         });
-        reset();
+
       } catch (err) {
         // eslint-disable-next-line no-console
         console.error('Failed to save the post: ', err);
       }
     }
+    reset();
   };
 
   const getResult = () => {
@@ -83,6 +84,8 @@ const FileInputForm = () => {
     return [currentStatus, returnedData];
   };
 
+  const myFileField = register('myFile', { required: true });
+
   return (
     <div>
       <Card border="secondary">
@@ -97,12 +100,16 @@ const FileInputForm = () => {
             accept=".pdf"
             id="fileItem"
             type="file"
-            {...register('myFile')}
-            onChange={onContentChanged}
+            {...myFileField}
+            onChange={(e) => {
+              myFileField.onChange(e);
+              onContentChanged(e);
+            }}
           />
-          <p>{errors.myFile?.message}</p>
           {isPending && <Loader />}
-          <p id="result">{getResult()}</p>
+          <p>{ errors.myFile?.message } </p>
+          <p>{ getResult() } </p>
+
           <Button
             variant="info"
             type="button"
