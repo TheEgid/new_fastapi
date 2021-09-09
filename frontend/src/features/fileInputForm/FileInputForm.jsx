@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
@@ -27,40 +27,47 @@ const FileInputForm = () => {
     register,
     handleSubmit,
     formState: { errors },
+    getValues,
     reset,
   } = useForm({
     resolver: yupResolver(schema),
   });
 
-  const [AddCustomFile,  { ...returned }] = useAddCustomFileMutation();
-  const [ AddFileData ] = useAddFileDataMutation();
+  const [content, setContent] = useState('');
+  const onContentChanged = (e) => setContent(e.target.value);
 
-  const isPending = returned.status === 'pending';
+  const [AddCustomFile, { data, status, isLoading }] = useAddCustomFileMutation();
+  const [AddFileData] = useAddFileDataMutation();
 
-  const onSubmit = (formValues) => {
-    const tfile = formValues.myFile[0];
-    if (typeof tfile !== 'undefined') {
-      const formData = new FormData();
-      formData.append('customfile', tfile, tfile.name);
-      AddCustomFile(formData);
-      AddFileData({
-        filename: 'super',
-        content_type: 'pooper',
-      });
-      reset();
-      // eslint-disable-next-line no-console
+  const isPending = status === 'pending';
+  const canSave = [content].every(Boolean) && !isLoading;
 
-      returned.status = 'rejected';
+  const onUploadFileClicked = async () => {
+    const inputFile = getValues('myFile')[0];
+    const formData = new FormData();
 
+    if (canSave && typeof inputFile !== 'undefined') {
+      try {
+        formData.append('customfile', inputFile, inputFile.name);
+        const returned = await AddCustomFile(formData).unwrap();
+        await AddFileData({
+          filename: returned.filename,
+          content_type: returned['content-type'],
+        });
+        reset();
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error('Failed to save the post: ', err);
+      }
     }
   };
 
-  const getResult = (res) => {
+  const getResult = () => {
     let returnedData = '';
     let currentStatus;
-    switch (res.status) {
+    switch (status) {
       case 'fulfilled':
-        returnedData = res.data.filename;
+        returnedData = data.filename;
         currentStatus = 'Загружен файл ';
         break;
       case 'pending':
@@ -73,12 +80,6 @@ const FileInputForm = () => {
         currentStatus = 'Ждём загрузку файла';
         break;
     }
-
-    if (currentStatus === 'Загружен файл ') {
-      // eslint-disable-next-line no-console
-      console.log(returnedData);
-    }
-    // if returnedData ==! "" {console.log(returnedData)}
     return [currentStatus, returnedData];
   };
 
@@ -88,20 +89,25 @@ const FileInputForm = () => {
         <Form.Label>
           <h5>Добавьте PDF файл</h5>
         </Form.Label>
-        <Form onSubmit={handleSubmit(onSubmit)}>
+        <Form>
           <input
+            className="form-control"
             disabled={isPending}
             style={isPending ? { color: `transparent` } : {}}
-            className="form-control"
             accept=".pdf"
             id="fileItem"
             type="file"
             {...register('myFile')}
+            onChange={onContentChanged}
           />
           <p>{errors.myFile?.message}</p>
           {isPending && <Loader />}
-          <p>{getResult(returned)}</p>
-          <Button hidden={isPending} variant="info" type="submit">
+          <p id="result">{getResult()}</p>
+          <Button
+            variant="info"
+            type="button"
+            onClick={handleSubmit(onUploadFileClicked)}
+            hidden={isPending}>
             Отправить
           </Button>
         </Form>
