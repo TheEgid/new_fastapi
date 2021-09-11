@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import Button from 'react-bootstrap/Button';
-import Card from 'react-bootstrap/Card';
-import Form from 'react-bootstrap/Form';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { mixed, object } from 'yup';
+import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
+import Form from 'react-bootstrap/Form';
 import { useAddCustomFileMutation, useAddFileDataMutation } from './fileInputFormFileSlice';
 import Loader from '../../components/Loader';
 
@@ -34,12 +34,11 @@ const FileInputForm = () => {
   });
 
   const [content, setContent] = useState();
-  const onContentChanged = (e) => setContent(e.target.value);
 
   const [AddCustomFile, { data, status, isLoading }] = useAddCustomFileMutation();
   const [AddFileData] = useAddFileDataMutation();
 
-  const canSave = [content].every(Boolean) && !isLoading;
+  const canSave = !!content && !isLoading;
   const isPending = status === 'pending';
 
   const onUploadFileClicked = async () => {
@@ -54,7 +53,6 @@ const FileInputForm = () => {
           filename: returned.filename,
           content_type: returned['content-type'],
         });
-
       } catch (err) {
         // eslint-disable-next-line no-console
         console.error('Failed to save the post: ', err);
@@ -81,10 +79,14 @@ const FileInputForm = () => {
         currentStatus = 'Ждём загрузку файла';
         break;
     }
+    if (Object.keys(errors).length !== 0) {
+      return errors.myFile?.message;
+    }
     return [currentStatus, returnedData];
   };
 
   const myFileField = register('myFile', { required: true });
+  const onContentChanged = (e) => setContent(e.target.value);
 
   return (
     <div>
@@ -94,6 +96,7 @@ const FileInputForm = () => {
         </Form.Label>
         <Form>
           <input
+            name="FileInput"
             className="form-control"
             disabled={isPending}
             style={isPending ? { color: `transparent` } : {}}
@@ -102,14 +105,13 @@ const FileInputForm = () => {
             type="file"
             {...myFileField}
             onChange={(e) => {
-              myFileField.onChange(e);
               onContentChanged(e);
             }}
           />
-          {isPending && <Loader />}
-          <p>{ errors.myFile?.message } </p>
-          <p>{ getResult() } </p>
-
+          <Card.Text style={{ marginTop: '20px' }}>
+            {isPending && <Loader />}
+            {getResult()}
+          </Card.Text>
           <Button
             variant="info"
             type="button"
