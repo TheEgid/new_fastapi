@@ -51,7 +51,8 @@ const FileInputForm = () => {
         const returned = await AddCustomFile(formData).unwrap();
         await AddFileData({
           filename: returned.filename,
-          content_type: returned['content-type'],
+          content: returned.content,
+          type: returned.type,
         });
       } catch (err) {
         // eslint-disable-next-line no-console
@@ -91,35 +92,37 @@ const FileInputForm = () => {
   return (
     <div>
       <Card border="secondary">
-        <Form.Label>
-          <h5>Добавьте PDF файл</h5>
-        </Form.Label>
-        <Form>
-          <input
-            name="FileInput"
-            className="form-control"
-            disabled={isPending}
-            style={isPending ? { color: `transparent` } : {}}
-            accept=".pdf"
-            id="fileItem"
-            type="file"
-            {...myFileField}
-            onChange={(e) => {
-              onContentChanged(e);
-            }}
-          />
-          <Card.Text style={{ marginTop: '20px' }}>
-            {isPending && <Loader />}
-            {getResult()}
-          </Card.Text>
-          <Button
-            variant="info"
-            type="button"
-            onClick={handleSubmit(onUploadFileClicked)}
-            hidden={isPending}>
-            Отправить
-          </Button>
-        </Form>
+        <Card.Body>
+          <Form.Label>
+            <h5>Добавьте PDF файл</h5>
+          </Form.Label>
+          <Form>
+            <input
+              name="FileInput"
+              className="form-control"
+              disabled={isPending}
+              style={isPending ? { color: `transparent` } : {}}
+              accept=".pdf"
+              id="fileItem"
+              type="file"
+              {...myFileField}
+              onChange={(e) => {
+                onContentChanged(e);
+              }}
+            />
+            <Card.Subtitle style={{ marginTop: '20px', marginBottom: '10px' }}>
+              {isPending && <Loader />}
+              <div>{getResult()}</div>
+            </Card.Subtitle>
+            <Button
+              variant="info"
+              type="button"
+              onClick={handleSubmit(onUploadFileClicked)}
+              hidden={isPending}>
+              Отправить
+            </Button>
+          </Form>
+        </Card.Body>
       </Card>
     </div>
   );

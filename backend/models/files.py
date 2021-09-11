@@ -10,6 +10,6 @@ files_table = sqlalchemy.Table(
     # sqlalchemy.Column("user_id", sqlalchemy.ForeignKey(users_table.c.id)),
     sqlalchemy.Column("created_at", sqlalchemy.DateTime()),
     sqlalchemy.Column("filename", sqlalchemy.String(100)),
-    sqlalchemy.Column("content_type", sqlalchemy.String(100)),
-    # sqlalchemy.Column("content", sqlalchemy.Text()),
+    sqlalchemy.Column("content", sqlalchemy.Text()),
+    sqlalchemy.Column("type", sqlalchemy.String(100)),
 )

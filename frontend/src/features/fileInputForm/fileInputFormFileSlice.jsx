@@ -31,11 +31,4 @@ export const fileApi = createApi({
   }),
 });
 
-// if (currentStatus === 'Загружен файл ') {
-//   // eslint-disable-next-line no-console
-//   console.log(current(res))
-// }
-export const selectSubscriptionStatus = (state) => state[fileApi.reducerPath];
-// eslint-disable-next-line no-console
-
 export const { useAddFileDataMutation, useAddCustomFileMutation } = fileApi;

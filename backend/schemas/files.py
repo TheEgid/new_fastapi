@@ -5,7 +5,8 @@ from pydantic import BaseModel
 class FileModel(BaseModel):
     """ Validate request data """
     filename: str
-    content_type: str
+    content: str
+    type: str
 
 
 class FileDetailsModel(FileModel):

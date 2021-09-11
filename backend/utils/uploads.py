@@ -1,5 +1,6 @@
 import aiofiles
 import os
+import re
 import mimetypes
 import fleep
 import pathlib
@@ -8,6 +9,9 @@ from aioify import aioify
 from enum import Enum
 from pdf2docx import parse
 from fastapi.logger import logger
+from string import printable
+from docx import Document
+from docx.opc.exceptions import PackageNotFoundError
 
 
 class PdfTypes(Enum):
@@ -67,13 +71,42 @@ def pdf_process(in_filepath):
     try:
         in_filepath = delete_bad_files(in_filepath)
         if in_filepath:
-            parse(in_filepath, in_filepath.replace('.pdf', '.docx'))
+            docx_path = in_filepath.replace('.pdf', '.docx')
+            parse(in_filepath, docx_path)
+            return docx_path
+        else:
+            return ""
     except (TypeError, PermissionError):
         return
 
 
+@aioify
 async def save_upload_file(customfile):
     file_location = pathlib.Path('UPLOAD', customfile.filename)
     async with aiofiles.open(file_location, "wb+") as f:
         await f.write(customfile.file.read())
     return str(file_location)
+
+
+def filter_nonprintable(text):
+    nonprint = set([chr(i) for i in range(128)]).difference(printable)
+    return text.translate({ord(character): None for character in nonprint})
+
+
+def filter_paragraph(s):
+    return '\n'.join(
+        str.split(re.sub(r'\s{2,}', ' ',
+                         re.sub(r'\n\n', '|\n',
+                                s.replace('::', ':'))), '|')).replace(':', ':')
+
+
+@aioify
+def get_file_content(file_path):
+    try:
+        doc = Document(file_path)
+        lst = []
+        for paragraph in doc.paragraphs[:25]:
+            lst.append(filter_paragraph(filter_nonprintable(paragraph.text)))
+        return " ".join(lst).strip()[:1000]
+    except PackageNotFoundError:
+        return ""

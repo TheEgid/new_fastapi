@@ -8,12 +8,14 @@ async def create_file(file: file_schema.FileModel, session: AsyncSession):
     query = (
         files_table.insert().values(
             filename=file.filename,
-            content_type=file.content_type,
+            content=file.content,
+            type=file.type,
             created_at=datetime.now(),
         ).returning(
             files_table.c.id,
             files_table.c.filename,
-            files_table.c.content_type,
+            files_table.c.content,
+            files_table.c.type,
             files_table.c.created_at,
         )
     )
