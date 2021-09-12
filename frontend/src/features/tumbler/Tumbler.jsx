@@ -13,28 +13,28 @@ const Tumbler = () => {
       <Form>
         <Form.Group controlId="rowQuantity">
           <Form.Check
-            value="3"
+            value="30"
             type="radio"
             aria-label="radio 1"
-            label="количество строк: 3"
+            label="количество строк: 30"
             onChange={(e) => dispatch(rowQuantity(e.target.value))}
-            checked={tumblerRowAmount === '3'}
+            checked={tumblerRowAmount === '30'}
           />
           <Form.Check
-            value="7"
+            value="70"
             type="radio"
             aria-label="radio 2"
-            label="количество строк: 7"
+            label="количество строк: 70"
             onChange={(e) => dispatch(rowQuantity(e.target.value))}
-            checked={tumblerRowAmount === '7'}
+            checked={tumblerRowAmount === '70'}
           />
           <Form.Check
-            value="10"
+            value="100"
             type="radio"
             aria-label="radio 3"
-            label="количество строк: 10"
+            label="количество строк: 100"
             onChange={(e) => dispatch(rowQuantity(e.target.value))}
-            checked={tumblerRowAmount === '10'}
+            checked={tumblerRowAmount === '100'}
           />
         </Form.Group>
       </Form>

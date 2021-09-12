@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 export const tumblerSlice = createSlice({
   name: 'tumblerReduser',
   initialState: {
-    rowsQty: '3',
+    rowsQty: '30',
   },
   reducers: {
     rowQuantity: (state, action) => {

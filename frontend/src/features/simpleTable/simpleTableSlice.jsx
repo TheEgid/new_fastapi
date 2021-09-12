@@ -19,6 +19,4 @@ export const simpleTableApi = createApi({
   }),
 });
 
-// Export hooks for usage in functional components, which are
-// auto-generated based on the DEFINED ENDPOINTS
 export const { useGetSimpleTableQuery } = simpleTableApi;
