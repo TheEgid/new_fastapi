@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
-import { rowQuantity, selectRowQuantity } from './tumblerSlice';
+import { changeRowQuantity, selectRowQuantity } from './tumblerSlice';
 
 const Tumbler = () => {
   const tumblerRowAmount = useSelector(selectRowQuantity);
@@ -17,7 +17,7 @@ const Tumbler = () => {
             type="radio"
             aria-label="radio 1"
             label="количество строк: 30"
-            onChange={(e) => dispatch(rowQuantity(e.target.value))}
+            onChange={(e) => dispatch(changeRowQuantity(e.target.value))}
             checked={tumblerRowAmount === '30'}
           />
           <Form.Check
@@ -25,7 +25,7 @@ const Tumbler = () => {
             type="radio"
             aria-label="radio 2"
             label="количество строк: 70"
-            onChange={(e) => dispatch(rowQuantity(e.target.value))}
+            onChange={(e) => dispatch(changeRowQuantity(e.target.value))}
             checked={tumblerRowAmount === '70'}
           />
           <Form.Check
@@ -33,7 +33,7 @@ const Tumbler = () => {
             type="radio"
             aria-label="radio 3"
             label="количество строк: 100"
-            onChange={(e) => dispatch(rowQuantity(e.target.value))}
+            onChange={(e) => dispatch(changeRowQuantity(e.target.value))}
             checked={tumblerRowAmount === '100'}
           />
         </Form.Group>

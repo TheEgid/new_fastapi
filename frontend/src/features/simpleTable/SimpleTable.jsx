@@ -1,11 +1,11 @@
 import React from 'react';
 import Table from 'react-bootstrap/Table';
-import PropTypes from 'prop-types';
 import sortObjectArray from 'sort-objects-array';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../../components/Loader';
 import DirectionSort from '../../components/DirectionSort';
 import { useGetSimpleTableQuery } from './simpleTableApi';
+import { selectRowQuantity } from '../tumbler/tumblerSlice';
 import {
   setDirectionOrder,
   setColumnName,
@@ -13,8 +13,8 @@ import {
   selectColumnName,
 } from './simpleTableSlice';
 
-const SimpleTable = (props) => {
-  const { rowAmount } = props;
+const SimpleTable = () => {
+  const rowAmount = useSelector(selectRowQuantity);
   const dispatch = useDispatch();
 
   const { data, isError, isLoading } = useGetSimpleTableQuery(rowAmount);
@@ -74,14 +74,6 @@ const SimpleTable = (props) => {
       {isError && <h3>Something went wrong ...</h3>}
     </div>
   );
-};
-
-SimpleTable.propTypes = {
-  rowAmount: PropTypes.string,
-};
-
-SimpleTable.defaultProps = {
-  rowAmount: '30',
 };
 
 export default SimpleTable;
