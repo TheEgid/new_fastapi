@@ -5,7 +5,7 @@ import { mixed, object } from 'yup';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
-import { useAddCustomFileMutation, useAddFileDataMutation } from './fileInputFormFileSlice';
+import { useAddCustomFileMutation, useAddFileDataMutation } from './fileInputFormFileApi';
 import Loader from '../../components/Loader';
 
 const schema = object().shape({

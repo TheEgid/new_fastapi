@@ -1,22 +1,22 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createSlice } from '@reduxjs/toolkit';
 
-// const mainApiUrl = `${process.env.REACT_APP_MAIN_API_URL}`;
-const mainApiUrl = `http://www.filltext.com/`;
-
-const urlpart =
-  '%7Bnumber%7C1000%7D&firstName=%7BfirstName%7D&lastName=%7BlastName%' +
-  '7D&email=%7Bemail%7D&phone=%7Bphone%7C(xxx)xxx-xx-xx%7D&address=%7BaddressObject%7D';
-
-export const simpleTableApi = createApi({
-  reducerPath: 'simpleTableApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: mainApiUrl,
-  }),
-  endpoints: (builder) => ({
-    getSimpleTable: builder.query({
-      query: (rowAmount) => `?rows=${rowAmount}&id=${urlpart}`,
-    }),
-  }),
+export const simpleTableSlice = createSlice({
+  name: 'simpleTableReduser',
+  initialState: {
+    direction: 'asc',
+    colName: 'id',
+  },
+  reducers: {
+    setDirectionOrder: (state, action) => {
+      state.direction = action.payload;
+    },
+    setColumnName: (state, action) => {
+      state.colName = action.payload;
+    },
+  },
 });
 
-export const { useGetSimpleTableQuery } = simpleTableApi;
+export const selectDirection = (state) => state.simpleTableReduser.direction;
+export const selectColumnName = (state) => state.simpleTableReduser.colName;
+
+export const { setDirectionOrder, setColumnName } = simpleTableSlice.actions;

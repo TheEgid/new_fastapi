@@ -1,31 +1,37 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Table from 'react-bootstrap/Table';
 import PropTypes from 'prop-types';
 import sortObjectArray from 'sort-objects-array';
-import { useGetSimpleTableQuery } from './simpleTableSlice';
+import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../../components/Loader';
 import DirectionSort from '../../components/DirectionSort';
+import { useGetSimpleTableQuery } from './simpleTableApi';
+import {
+  setDirectionOrder,
+  setColumnName,
+  selectDirection,
+  selectColumnName,
+} from './simpleTableSlice';
 
 const SimpleTable = (props) => {
   const { rowAmount } = props;
+  const dispatch = useDispatch();
+
   const { data, isError, isLoading } = useGetSimpleTableQuery(rowAmount);
 
-  const [targetValue, setTargetValue] = useState('id');
-  const [direction, setDirection] = useState('asc');
+  const direction = useSelector(selectDirection);
+  const columnName = useSelector(selectColumnName);
 
   const sortTable = (val) => {
-    if (targetValue !== val) {
-      setDirection('asc');
-      setTargetValue(val);
-      return;
+    const defaultDirection = 'asc';
+    if (columnName !== val) {
+      dispatch(setDirectionOrder(defaultDirection)); // new target
+    } else {
+      const directionsMap = { asc: 'desc', desc: 'asc' }; // old target, just swap direction
+      const newDirection = directionsMap[direction];
+      dispatch(setDirectionOrder(newDirection === undefined ? defaultDirection : newDirection));
     }
-    if (direction === '' || direction === 'desc') {
-      setDirection('asc');
-    }
-    if (direction === 'asc') {
-      setDirection('desc');
-    }
-    setTargetValue(val);
+    dispatch(setColumnName(val));
   };
 
   return (
@@ -34,15 +40,15 @@ const SimpleTable = (props) => {
       {data && sortObjectArray(data, 'id', 'asc') && (
         <>
           <Table striped bordered hover>
-            <thead>
+            <thead className="table-success">
               <tr>
                 <th id="id" onClick={() => sortTable('id')}>
                   id
-                  {targetValue === 'id' ? <DirectionSort direction={direction} /> : null}
+                  {columnName === 'id' ? <DirectionSort direction={direction} /> : null}
                 </th>
                 <th id="firstName" onClick={() => sortTable('firstName')}>
                   firstName
-                  {targetValue === 'firstName' ? <DirectionSort direction={direction} /> : null}
+                  {columnName === 'firstName' ? <DirectionSort direction={direction} /> : null}
                 </th>
                 <th>Второй</th>
                 <th>Третий</th>
@@ -51,7 +57,7 @@ const SimpleTable = (props) => {
               </tr>
             </thead>
             <tbody>
-              {sortObjectArray(data, targetValue, direction).map((row) => (
+              {sortObjectArray(data, columnName, direction).map((row) => (
                 <tr key={row.email}>
                   <td>{row.id}</td>
                   <td>{row.firstName}</td>

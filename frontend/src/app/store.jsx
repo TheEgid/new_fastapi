@@ -1,9 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
-import { simpleTableApi } from '../features/simpleTable/simpleTableSlice';
+import { simpleTableSlice } from '../features/simpleTable/simpleTableSlice';
+import { simpleTableApi } from '../features/simpleTable/simpleTableApi';
 import { baseViewSlice } from '../features/baseView/baseViewSlice';
 import { tumblerSlice } from '../features/tumbler/tumblerSlice';
-import { fileApi } from '../features/fileInputForm/fileInputFormFileSlice';
+import { fileApi } from '../features/fileInputForm/fileInputFormFileApi';
 
 const store = configureStore({
   reducer: {
@@ -11,6 +12,7 @@ const store = configureStore({
     tumblerReduser: tumblerSlice.reducer,
     [fileApi.reducerPath]: fileApi.reducer,
     [simpleTableApi.reducerPath]: simpleTableApi.reducer,
+    simpleTableReduser: simpleTableSlice.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>
