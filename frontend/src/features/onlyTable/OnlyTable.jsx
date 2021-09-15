@@ -2,26 +2,22 @@ import React from 'react';
 import Table from 'react-bootstrap/Table';
 import sortObjectArray from 'sort-objects-array';
 import { useDispatch, useSelector } from 'react-redux';
-import Loader from '../../components/Loader';
 import DirectionSort from '../../components/DirectionSort';
-import { useGetSimpleTableQuery } from './simpleTableApi';
-import { selectRowQuantity } from '../tumbler/tumblerSlice';
+
 import {
   setDirectionOrder,
   setColumnName,
   selectDirection,
   selectColumnName,
-} from './simpleTableSlice';
+} from './onlyTableSlice';
 
-const SimpleTable = () => {
-  const rowAmount = useSelector(selectRowQuantity);
+// eslint-disable-next-line react/prop-types
+const OnlyTable = ({ indata }) => {
   const dispatch = useDispatch();
-
-  const { data, isError, isLoading } = useGetSimpleTableQuery(rowAmount);
-
   const direction = useSelector(selectDirection);
   const columnName = useSelector(selectColumnName);
 
+  // eslint-disable-next-line no-unused-vars
   const sortTable = (val) => {
     const defaultDirection = 'asc';
     if (columnName !== val) {
@@ -36,8 +32,7 @@ const SimpleTable = () => {
 
   return (
     <div className="text-center">
-      {isLoading && <Loader />}
-      {data && sortObjectArray(data, 'id', 'asc') && (
+      {indata && sortObjectArray(indata, 'id', 'asc') && (
         <>
           <Table striped bordered hover>
             <thead className="table-success">
@@ -57,7 +52,7 @@ const SimpleTable = () => {
               </tr>
             </thead>
             <tbody>
-              {sortObjectArray(data, columnName, direction).map((row) => (
+              {sortObjectArray(indata, columnName, direction).map((row) => (
                 <tr key={row.email}>
                   <td>{row.id}</td>
                   <td>{row.firstName}</td>
@@ -71,9 +66,8 @@ const SimpleTable = () => {
           </Table>
         </>
       )}
-      {isError && <h3>Something went wrong ...</h3>}
     </div>
   );
 };
 
-export default SimpleTable;
+export default OnlyTable;

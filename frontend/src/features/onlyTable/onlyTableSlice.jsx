@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-export const simpleTableSlice = createSlice({
-  name: 'simpleTableReduser',
+export const onlyTableSlice = createSlice({
+  name: 'onlyTableReduser',
   initialState: {
     direction: 'asc',
     colName: 'id',
@@ -16,7 +16,7 @@ export const simpleTableSlice = createSlice({
   },
 });
 
-export const selectDirection = (state) => state.simpleTableReduser.direction;
-export const selectColumnName = (state) => state.simpleTableReduser.colName;
+export const selectDirection = (state) => state.onlyTableReduser.direction;
+export const selectColumnName = (state) => state.onlyTableReduser.colName;
 
-export const { setDirectionOrder, setColumnName } = simpleTableSlice.actions;
+export const { setDirectionOrder, setColumnName } = onlyTableSlice.actions;

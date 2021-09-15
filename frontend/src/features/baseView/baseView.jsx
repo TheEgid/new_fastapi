@@ -3,7 +3,7 @@ import Button from 'react-bootstrap/Button';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectbaseViewCondition, switchView } from './baseViewSlice';
 import Tumbler from '../tumbler/Tumbler';
-import SimpleTable from '../simpleTable/SimpleTable';
+import StubTable from '../stubTable/StubTable';
 
 const BaseView = () => {
   const stateOnOff = useSelector(selectbaseViewCondition);
@@ -17,7 +17,7 @@ const BaseView = () => {
       <br />
       {stateOnOff === true && <Tumbler />}
       <br />
-      {stateOnOff === true && <SimpleTable />}
+      {stateOnOff === true && <StubTable />}
     </>
   );
 };
