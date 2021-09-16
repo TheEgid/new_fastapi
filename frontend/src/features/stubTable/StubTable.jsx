@@ -17,7 +17,6 @@ const StubTable = () => {
     <div className="text-center">
       {isLoading && <Loader />}
       {isSuccess && <PaginationPanel data={data} />}
-
       {isError && <h3>Something went wrong ...</h3>}
     </div>
   );

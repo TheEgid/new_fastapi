@@ -4,7 +4,7 @@ import { onlyTableSlice } from '../features/onlyTable/onlyTableSlice';
 import { stubTableApi } from '../features/stubTable/stubTableApi';
 import { baseViewSlice } from '../features/baseView/baseViewSlice';
 import { tumblerSlice } from '../features/tumbler/tumblerSlice';
-import { paginationPanelSlice } from '../features/paginationPanel/paginationPanelSlice';
+// import { paginationPanelSlice } from '../features/paginationPanel/paginationPanelSlice';
 import { fileApi } from '../features/fileInputForm/fileInputFormFileApi';
 
 const store = configureStore({
@@ -13,7 +13,7 @@ const store = configureStore({
     [stubTableApi.reducerPath]: stubTableApi.reducer,
     baseViewReduser: baseViewSlice.reducer,
     tumblerReduser: tumblerSlice.reducer,
-    paginationPanelReduser: paginationPanelSlice.reducer,
+    // paginationPanelReduser: paginationPanelSlice.reducer,
     onlyTableReduser: onlyTableSlice.reducer,
   },
 
