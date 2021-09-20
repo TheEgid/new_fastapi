@@ -1,10 +1,9 @@
-import { React } from 'react';
-// eslint-disable-next-line no-unused-vars
-import { ArrowRightSquareFill, ArrowLeftSquareFill, Funnel } from 'react-bootstrap-icons';
+import React from 'react';
+import { ArrowRightSquareFill, ArrowLeftSquareFill } from 'react-bootstrap-icons';
 import { Grid, _ } from 'gridjs-react';
 import 'gridjs/dist/theme/mermaid.css';
 
-const OnlyTable = (indata) => {
+const TableView = (indata) => {
   const { data } = indata;
   const tableData = [];
   data.map((row) =>
@@ -17,14 +16,13 @@ const OnlyTable = (indata) => {
       row.address.city,
     ]),
   );
-
   return (
     <>
       <Grid
         data={tableData}
         columns={['первый', 'второй', 'третий', 'четвертый', 'пятый', 'шестой']}
-        search
         sort
+        search
         resizable
         language={{
           search: {
@@ -39,12 +37,10 @@ const OnlyTable = (indata) => {
             results: () => '',
           },
         }}
-        pagination={{
-          limit: 5,
-        }}
+        pagination={{ limit: 5 }}
       />
     </>
   );
 };
 
-export default OnlyTable;
+export default TableView;
