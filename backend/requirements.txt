@@ -11,7 +11,7 @@ psycopg2-binary==2.9.1
 pydantic==1.8.2
 environs==9.3.3
 python-multipart==0.0.5
-SQLAlchemy==1.4.23
+SQLAlchemy==1.4.25
 SQLAlchemy-Utils==0.37.8
 tox==3.24.4
 pytest==6.2.5
@@ -21,5 +21,5 @@ pdf2docx==0.5.2
 fleep==1.0.1
 aiofiles==0.7.0
 aioify==0.4.0
-pikepdf==3.0.0
+pikepdf==3.1.0
 docx==0.2.4

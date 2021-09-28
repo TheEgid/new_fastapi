@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import sortObjectArray  from 'sort-objects-array';
+import sortObjectArray from 'sort-objects-array';
 import { useGetDTableQuery } from './dataTableApi';
 import { selectRowQuantity } from '../tumbler/tumblerSlice';
 import Loader from '../../components/Loader';

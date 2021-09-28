@@ -1,24 +1,48 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
-// import { onlyTableSlice } from '../features/onlyTable/onlyTableSlice';
+import storage from 'redux-persist/lib/storage';
+import {
+  persistStore,
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from 'redux-persist';
 import { dataTableApi } from '../features/dataTable/dataTableApi';
 import { baseViewSlice } from '../features/baseView/baseViewSlice';
 import { tumblerSlice } from '../features/tumbler/tumblerSlice';
 import { fileApi } from '../features/fileInputForm/fileInputFormFileApi';
+import { userApi } from '../features/user/userApi';
+import auth from '../features/authorization/authorizationSlice';
 
-const store = configureStore({
+const userPersistConfig = {
+  key: 'auth',
+  storage,
+  whitelist: ['token'],
+};
+
+export const store = configureStore({
   reducer: {
     [fileApi.reducerPath]: fileApi.reducer,
     [dataTableApi.reducerPath]: dataTableApi.reducer,
     baseViewReduser: baseViewSlice.reducer,
     tumblerReduser: tumblerSlice.reducer,
-    // onlyTableReduser: onlyTableSlice.reducer,
+    [userApi.reducerPath]: userApi.reducer,
+    auth: persistReducer(userPersistConfig, auth),
   },
-
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(dataTableApi.middleware).concat(fileApi.middleware),
+  middleware: (getDefaultMiddleware) => [
+    ...getDefaultMiddleware({
+      serializableCheck: { ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER] },
+    })
+      .concat(dataTableApi.middleware)
+      .concat(fileApi.middleware)
+      .concat(userApi.middleware),
+  ],
 });
 
-setupListeners(store.dispatch);
+export const persistor = persistStore(store);
 
-export default store;
+setupListeners(store.dispatch);
