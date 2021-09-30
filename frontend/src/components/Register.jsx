@@ -1,25 +1,21 @@
 import { React, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Container, Form, Button } from 'react-bootstrap';
 import { ToastContainer, toast } from 'react-toastify';
 import { useCreateUserMutation } from '../features/user/userApi';
 import Loader from './Loader';
 import 'react-toastify/dist/ReactToastify.css';
+// eslint-disable-next-line no-unused-vars
+import { setCredentials } from '../features/authorization/authorizationSlice';
 
 const Register = () => {
-  const [user, setUser] = useState({
-    name: '',
-    email: '',
-    password: '',
-  });
-
+  // eslint-disable-next-line no-unused-vars
+  const dispatch = useDispatch();
+  const [user, setUser] = useState({ name: '', email: '', password: '' });
   const [createUser, { isLoading }] = useCreateUserMutation();
 
   const reset = () => {
-    setUser({
-      name: '',
-      email: '',
-      password: '',
-    });
+    setUser({ name: '', email: '', password: '' });
   };
 
   const handleInputName = (e) => {
@@ -27,20 +23,26 @@ const Register = () => {
     setUser((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleRegistration = async (e) => {
     e.preventDefault();
-    createUser({ user })
-      .unwrap()
-      .then((payload) => {
-        // eslint-disable-next-line no-console
-        console.log(payload);
-        toast.success('You have registered!', { autoClose: 2000 });
-      })
-      .catch((error) => {
-        // eslint-disable-next-line no-console
-        console.log(error);
-        toast.error('Registration canceled!', { autoClose: 2000 });
-      });
+    try {
+      createUser({ user })
+        .unwrap()
+        .then((payload) => {
+          toast.success('You have registered!', { autoClose: 2000 });
+          dispatch(setCredentials({ ...payload }));
+          return payload;
+        })
+        .catch((error) => {
+          if (error.data.detail === 'Email already registered') {
+            toast.error('Email already registered!', { autoClose: 2000 });
+          } else {
+            toast.error('Registration canceled!', { autoClose: 2000 });
+          }
+        });
+    } catch (err) {
+      toast.error('Registration canceled!', { autoClose: 2000 });
+    }
     reset();
   };
 
@@ -48,7 +50,7 @@ const Register = () => {
     <Container>
       <ToastContainer />
       <h2 className="register-title">Registration form</h2>
-      <Form onSubmit={handleSubmit}>
+      <Form onSubmit={handleRegistration}>
         <Form.Group className="mb-3" controlId="formBasicName">
           <Form.Label>Name Surname</Form.Label>
           <Form.Control

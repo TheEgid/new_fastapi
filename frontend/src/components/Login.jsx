@@ -9,18 +9,11 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const Login = () => {
   const dispatch = useDispatch();
-
-  const [user, setUser] = useState({
-    email: '',
-    password: '',
-  });
-
+  const [user, setUser] = useState({ email: '', password: '' });
   const reset = () => {
-    setUser({
-      email: '',
-      password: '',
-    });
+    setUser({ email: '', password: '' });
   };
+
   const [loginUser, { isLoading }] = useLoginUserMutation();
 
   const handleInputName = (e) => {
@@ -28,15 +21,17 @@ const Login = () => {
     setUser((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-
     try {
       const result = await loginUser({ user })
         .unwrap()
         .then((payload) => {
-          toast.success('You are logged in!', { autoClose: 2000 });
-          return payload;
+          if (payload.access_token) {
+            toast.success('You are logged in!', { autoClose: 2000 });
+            return payload;
+          }
+          return undefined;
         })
         .catch(() => {
           toast.error('Login canceled. Check your username or password', { autoClose: 2000 });
@@ -46,15 +41,15 @@ const Login = () => {
         dispatch(setCredentials({ ...result, ...user }));
       }
     } catch (err) {
-      // eslint-disable-next-line no-console
-      console.log(err);
+      toast.error('Login canceled. Check your username or password', { autoClose: 2000 });
     }
   };
+
   return (
     <Container>
       <ToastContainer />
       <h2 className="login-title">Log in</h2>
-      <Form onSubmit={handleSubmit}>
+      <Form onSubmit={handleLogin}>
         <Form.Group className="mb-3" controlId="formGroupEmail">
           <Form.Label>Email address</Form.Label>
           <Form.Control

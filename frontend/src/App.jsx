@@ -3,7 +3,6 @@ import { Switch } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import FileInputForm from './features/fileInputForm/FileInputForm';
 import BaseView from './features/baseView/BaseView';
-import Navigation from './components/Navigation';
 import Spinner from './components/Spinner';
 import PublicRoute from './app/PublicRoute';
 // import PrivateRoute from './app/PrivateRoute';
@@ -15,7 +14,6 @@ const Login = lazy(() => import('./components/Login' /* webpackChunkName: "Login
 const App = () => (
   <>
     <Container>
-      <Navigation />
       <Suspense fallback={<Spinner />}>
         <Switch>
           <PublicRoute path="/" exact>
@@ -23,11 +21,11 @@ const App = () => (
             <BaseView />
           </PublicRoute>
 
-          <PublicRoute path="/login" redirectTo="/contacts" restricted>
+          <PublicRoute path="/login" redirectTo="/" restricted>
             <Login />
           </PublicRoute>
 
-          <PublicRoute path="/register" restricted>
+          <PublicRoute path="/register" redirectTo="/" restricted>
             <Register />
           </PublicRoute>
         </Switch>

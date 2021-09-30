@@ -12,7 +12,6 @@ export const userApi = createApi({
       return headers;
     },
   }),
-
   tagTypes: ['User'],
   endpoints: (builder) => ({
     fetchCurrentUser: builder.query({
@@ -43,9 +42,10 @@ export const userApi = createApi({
       }),
       invalidatesTags: ['User'],
     }),
+
     logoutUser: builder.mutation({
       query: () => ({
-        url: '/users/logout',
+        url: '/logout',
         method: 'POST',
       }),
       invalidatesTags: ['User'],

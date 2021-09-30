@@ -15,6 +15,12 @@ async def health_check():
     return {"Hello": "Hello"}
 
 
+@router.post('/logout', response_model=users.TokenBase)
+async def logout(session: AsyncSession = Depends(get_db_session)):
+    await session.close()
+    return
+
+
 @router.post("/auth", response_model=users.TokenBase)
 async def auth(form_data: OAuth2PasswordRequestForm = Depends(),
                session: AsyncSession = Depends(get_db_session)):

@@ -4,6 +4,7 @@ import { skipToken } from '@reduxjs/toolkit/query/react';
 import Navbar from 'react-bootstrap/Navbar';
 import { NavLink } from 'react-router-dom';
 import { Container, Nav, Button } from 'react-bootstrap';
+import { ToastContainer } from 'react-toastify';
 import Loader from './Loader';
 import { useFetchCurrentUserQuery, useLogoutUserMutation } from '../features/user/userApi';
 import {
@@ -13,6 +14,7 @@ import {
   setCurrentUser,
   removeCredetials,
 } from '../features/authorization/authorizationSlice';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Navigation = () => {
   const dispatch = useDispatch();
@@ -32,7 +34,7 @@ const Navigation = () => {
     dispatch(setCurrentUser(currentUser));
   }, [dispatch, currentUser, token]);
 
-  const handleSubmit = async () => {
+  const handleLogout = async () => {
     try {
       const result = await logoutUser();
       dispatch(removeCredetials(result.data));
@@ -44,6 +46,7 @@ const Navigation = () => {
 
   return (
     <div className="header">
+      <ToastContainer />
       <Container>
         <Navbar expand="lg" bg="nav">
           <Navbar.Brand as={NavLink} to="/">
@@ -63,7 +66,7 @@ const Navigation = () => {
                 <Navbar.Text className="nav-title">
                   Вы вошли как <strong>{name}</strong>
                 </Navbar.Text>
-                <Button type="button" variant="light" onClick={handleSubmit} disabled={isLoading}>
+                <Button type="button" variant="light" onClick={handleLogout} disabled={isLoading}>
                   {isLoading ? <Loader /> : 'Exit'}
                 </Button>
               </Nav>
