@@ -6,7 +6,7 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 import { useAddCustomFileMutation, useAddFileDataMutation } from './fileInputFormFileApi';
-import Loader from '../../components/Loader';
+import Spinner from '../../components/Spinner';
 
 const schema = object().shape({
   myFile: mixed()
@@ -111,7 +111,7 @@ const FileInputForm = () => {
               }}
             />
             <Card.Subtitle style={{ marginTop: '20px', marginBottom: '10px' }}>
-              {isPending && <Loader />}
+              {isPending && <Spinner />}
               <div>{getResult()}</div>
             </Card.Subtitle>
             <Button

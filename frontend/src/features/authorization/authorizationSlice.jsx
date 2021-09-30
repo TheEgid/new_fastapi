@@ -35,11 +35,9 @@ export const slice = createSlice({
       state.user = credentials.email; // user;
       state.token = credentials.access_token;
       state.isLoggedIn = true;
-      localStorage.setItem('access_token', credentials.access_token);
     },
     removeCredetials: (state) => {
       state.user = 'anonymous';
-      localStorage.setItem('access_token', 'anonymous');
       state.token = null;
       state.isLoggedIn = false;
     },
@@ -48,7 +46,6 @@ export const slice = createSlice({
       if (credentials !== undefined) {
         state.user = credentials.email; // user;
         state.isLoggedIn = true;
-        localStorage.setItem("access_token", credentials.access_token)
       } else {
         state.user = 'anonymous';
         state.token = null;

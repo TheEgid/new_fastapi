@@ -2,10 +2,10 @@ import { React, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Container, Form, Button } from 'react-bootstrap';
 import { ToastContainer, toast } from 'react-toastify';
-import { useLoginUserMutation } from '../features/user/userApi';
-import { setCredentials } from '../features/authorization/authorizationSlice';
-import Loader from './Loader';
+import { useLoginUserMutation } from './userApi';
+import { setCredentials } from '../authorization/authorizationSlice';
 import 'react-toastify/dist/ReactToastify.css';
+import Spinner from '../../components/Spinner';
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -73,7 +73,7 @@ const Login = () => {
         </Form.Group>
 
         <Button variant="secondary" type="submit" disabled={isLoading}>
-          {isLoading ? <Loader /> : 'Submit'}
+          {isLoading ? <Spinner /> : 'Submit'}
         </Button>
       </Form>
     </Container>

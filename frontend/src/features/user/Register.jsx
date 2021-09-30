@@ -2,14 +2,12 @@ import { React, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Container, Form, Button } from 'react-bootstrap';
 import { ToastContainer, toast } from 'react-toastify';
-import { useCreateUserMutation } from '../features/user/userApi';
-import Loader from './Loader';
+import { useCreateUserMutation } from './userApi';
+import { setCredentials } from '../authorization/authorizationSlice';
 import 'react-toastify/dist/ReactToastify.css';
-// eslint-disable-next-line no-unused-vars
-import { setCredentials } from '../features/authorization/authorizationSlice';
+import Spinner from '../../components/Spinner';
 
 const Register = () => {
-  // eslint-disable-next-line no-unused-vars
   const dispatch = useDispatch();
   const [user, setUser] = useState({ name: '', email: '', password: '' });
   const [createUser, { isLoading }] = useCreateUserMutation();
@@ -88,7 +86,7 @@ const Register = () => {
         </Form.Group>
 
         <Button variant="secondary" type="submit" disabled={isLoading}>
-          {isLoading ? <Loader type="Circles" color="#383838" height={15} width={15} /> : 'Submit'}
+          {isLoading ? <Spinner /> : 'Submit'}
         </Button>
       </Form>
     </Container>

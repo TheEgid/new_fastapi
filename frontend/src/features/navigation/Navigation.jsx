@@ -5,16 +5,17 @@ import Navbar from 'react-bootstrap/Navbar';
 import { NavLink } from 'react-router-dom';
 import { Container, Nav, Button } from 'react-bootstrap';
 import { ToastContainer } from 'react-toastify';
-import Loader from './Loader';
-import { useFetchCurrentUserQuery, useLogoutUserMutation } from '../features/user/userApi';
+import { useFetchCurrentUserQuery, useLogoutUserMutation } from '../user/userApi';
 import {
   getIsLoggedIn,
   getUserName,
   getUserToken,
   setCurrentUser,
   removeCredetials,
-} from '../features/authorization/authorizationSlice';
+} from '../authorization/authorizationSlice';
+import Spinner from '../../components/Spinner';
 import 'react-toastify/dist/ReactToastify.css';
+import './Navigation.scss';
 
 const Navigation = () => {
   const dispatch = useDispatch();
@@ -66,17 +67,22 @@ const Navigation = () => {
                 <Navbar.Text className="nav-title">
                   Вы вошли как <strong>{name}</strong>
                 </Navbar.Text>
-                <Button type="button" variant="light" onClick={handleLogout} disabled={isLoading}>
-                  {isLoading ? <Loader /> : 'Exit'}
+                <Button
+                  type="button"
+                  style={{ margin: '0px' }}
+                  variant="light"
+                  onClick={handleLogout}
+                  disabled={isLoading}>
+                  {isLoading ? <Spinner /> : 'Выход'}
                 </Button>
               </Nav>
             ) : (
               <Nav>
-                <Nav.Link as={NavLink} to="/login">
-                  Войти
-                </Nav.Link>
                 <Nav.Link as={NavLink} to="/register">
                   Зарегистрироваться
+                </Nav.Link>
+                <Nav.Link as={NavLink} to="/login">
+                  Войти
                 </Nav.Link>
               </Nav>
             )}

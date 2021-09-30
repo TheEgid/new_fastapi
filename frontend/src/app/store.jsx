@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
-import storage from 'redux-persist/lib/storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   persistStore,
   persistReducer,
@@ -20,8 +20,7 @@ import auth from '../features/authorization/authorizationSlice';
 
 const userPersistConfig = {
   key: 'auth',
-  storage,
-  whitelist: ['token'],
+  storage: AsyncStorage,
 };
 
 export const store = configureStore({
