@@ -111,8 +111,8 @@ const FileInputForm = () => {
               }}
             />
             <Card.Subtitle style={{ marginTop: '20px', marginBottom: '10px' }}>
-              {isPending && <Spinner />}
-              <div>{getResult()}</div>
+              {isPending && <Spinner height={35} width={35}/>}
+              <div><strong>{getResult()}</strong></div>
             </Card.Subtitle>
             <Button
               variant="info"
