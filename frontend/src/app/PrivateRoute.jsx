@@ -10,7 +10,7 @@ const PrivateRoute = ({ children, ...routeProps }) => {
 };
 
 PrivateRoute.propTypes = {
-  children: PropTypes.element,
+  children: PropTypes.instanceOf(Object),
 };
 
 PrivateRoute.defaultProps = {

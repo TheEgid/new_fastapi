@@ -20,7 +20,7 @@ PublicRoute.propTypes = {
   component: PropTypes.element,
   restricted: PropTypes.bool,
   redirectTo: PropTypes.string,
-  children: PropTypes.element,
+  children: PropTypes.instanceOf(Object),
 };
 
 PublicRoute.defaultProps = {
