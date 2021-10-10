@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { mixed, object } from 'yup';
@@ -28,6 +28,7 @@ const FileInputForm = () => {
     handleSubmit,
     formState: { errors },
     getValues,
+    watch,
     reset,
   } = useForm({
     resolver: yupResolver(schema),
@@ -87,7 +88,15 @@ const FileInputForm = () => {
   };
 
   const myFileField = register('myFile', { required: true });
-  const onContentChanged = (e) => setContent(e.target.value);
+
+  useEffect(() => {
+    const subscription = watch((value) => {
+      if (value.myFile) {
+        setContent(value.myFile);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [watch]);
 
   return (
     <div>
@@ -98,7 +107,7 @@ const FileInputForm = () => {
           </Form.Label>
           <Form>
             <input
-              name="FileInput"
+              name="fileItem"
               className="form-control"
               disabled={isPending}
               style={isPending ? { color: `transparent` } : {}}
@@ -106,13 +115,10 @@ const FileInputForm = () => {
               id="fileItem"
               type="file"
               {...myFileField}
-              onChange={(e) => {
-                onContentChanged(e);
-              }}
             />
             <Card.Subtitle style={{ marginTop: '20px', marginBottom: '10px' }}>
-              {isPending && <Spinner height={35} width={35}/>}
-              <div><strong>{getResult()}</strong></div>
+              {isPending && <Spinner height={40} width={40} />}
+              <div>{getResult()}</div>
             </Card.Subtitle>
             <Button
               variant="info"

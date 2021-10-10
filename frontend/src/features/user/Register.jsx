@@ -1,28 +1,37 @@
-import { React, useState } from 'react';
+import { React, useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { Container, Form, Button } from 'react-bootstrap';
 import { ToastContainer, toast } from 'react-toastify';
+import { string, object } from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { useCreateUserMutation } from './userApi';
 import { setCredentials } from '../authorization/authorizationSlice';
 import 'react-toastify/dist/ReactToastify.css';
 import Spinner from '../../components/Spinner';
 
+const schema = object().shape({
+  name: string().required(),
+  email: string().required().email(),
+  password: string().required().min(6).max(128),
+});
+
 const Register = () => {
   const dispatch = useDispatch();
-  const [user, setUser] = useState({ name: '', email: '', password: '' });
   const [createUser, { isLoading }] = useCreateUserMutation();
+  const [user, setUser] = useState({ name: '', email: '', password: '' });
+  const { register, watch, reset, handleSubmit } = useForm({ resolver: yupResolver(schema) });
 
-  const reset = () => {
-    setUser({ name: '', email: '', password: '' });
-  };
+  useEffect(() => {
+    const subscription = watch((value) => {
+      if (value.email && value.password) {
+        setUser(value);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [watch]);
 
-  const handleInputName = (e) => {
-    const { name, value } = e.target;
-    setUser((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleRegistration = async (e) => {
-    e.preventDefault();
+  const handleRegistration = async () => {
     try {
       createUser({ user })
         .unwrap()
@@ -47,44 +56,40 @@ const Register = () => {
   return (
     <Container>
       <ToastContainer />
-      <h2 className="register-title">Registration form</h2>
-      <Form onSubmit={handleRegistration}>
-        <Form.Group className="mb-3" controlId="formBasicName">
+      <Form.Label>
+        <h2>Log in</h2>
+      </Form.Label>
+      <Form onSubmit={handleSubmit(handleRegistration)}>
+        <Form.Group className="mb-3" controlId="formGroupEmail">
           <Form.Label>Name Surname</Form.Label>
           <Form.Control
-            type="text"
-            name="name"
-            value={user.name}
+            className="form-control"
             placeholder="Name Surname"
-            onChange={handleInputName}
+            name="name"
+            type="name"
+            {...register('name', { required: true })}
           />
         </Form.Group>
-
-        <Form.Group className="mb-3" controlId="formBasicEmail">
+        <Form.Group className="mb-3" controlId="formGroupEmail">
           <Form.Label>Email address</Form.Label>
           <Form.Control
-            type="email"
+            className="form-control"
+            placeholder="Email address"
             name="email"
-            value={user.email}
-            placeholder="Enter email"
-            onChange={handleInputName}
+            type="email"
+            {...register('email', { required: true })}
           />
-          <Form.Text className="text-muted">
-            We will never share your email with anyone else.
-          </Form.Text>
         </Form.Group>
-
-        <Form.Group className="mb-3" controlId="formBasicPassword">
+        <Form.Group className="mb-3" controlId="formGroupPassword">
           <Form.Label>Password</Form.Label>
           <Form.Control
-            type="password"
-            name="password"
-            value={user.password}
+            className="form-control"
             placeholder="Password"
-            onChange={handleInputName}
+            name="password"
+            type="password"
+            {...register('password', { required: true })}
           />
         </Form.Group>
-
         <Button variant="secondary" type="submit" disabled={isLoading}>
           {isLoading ? <Spinner /> : 'Submit'}
         </Button>
