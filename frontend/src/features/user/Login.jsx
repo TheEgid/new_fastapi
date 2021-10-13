@@ -1,4 +1,4 @@
-import { React, useState, useEffect } from 'react';
+import { React } from 'react';
 import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { string, object } from 'yup';
@@ -11,26 +11,16 @@ import 'react-toastify/dist/ReactToastify.css';
 import Spinner from '../../components/Spinner';
 
 const schema = object().shape({
-  email: string().required().email(),
-  password: string().required().min(6).max(128),
+  email: string().email().required(),
+  password: string().required(),
 });
 
 const Login = () => {
   const dispatch = useDispatch();
+  const { register, handleSubmit, reset } = useForm({ resolver: yupResolver(schema) });
   const [loginUser, { isLoading }] = useLoginUserMutation();
-  const [user, setUser] = useState({ email: '', password: '' });
-  const { register, watch, reset, handleSubmit } = useForm({ resolver: yupResolver(schema) });
 
-  useEffect(() => {
-    const subscription = watch((value) => {
-      if (value.email && value.password) {
-        setUser(value);
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, [watch]);
-
-  const handleLogin = async () => {
+  const handleLogin = async (user) => {
     try {
       const result = await loginUser({ user })
         .unwrap()
@@ -64,20 +54,18 @@ const Login = () => {
         <Form.Group className="mb-3" controlId="formGroupEmail">
           <Form.Label>Email address</Form.Label>
           <Form.Control
-            className="form-control"
             placeholder="Email address"
-            name="email"
             type="email"
+            name="email"
             {...register('email', { required: true })}
           />
         </Form.Group>
         <Form.Group className="mb-3" controlId="formGroupPassword">
           <Form.Label>Password</Form.Label>
           <Form.Control
-            className="form-control"
             placeholder="Password"
-            name="password"
             type="password"
+            name="password"
             {...register('password', { required: true })}
           />
         </Form.Group>

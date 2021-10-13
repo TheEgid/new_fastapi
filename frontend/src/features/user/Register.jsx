@@ -1,10 +1,10 @@
-import { React, useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { React } from 'react';
 import { useDispatch } from 'react-redux';
-import { Container, Form, Button } from 'react-bootstrap';
-import { ToastContainer, toast } from 'react-toastify';
+import { useForm } from 'react-hook-form';
 import { string, object } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { Container, Form, Button } from 'react-bootstrap';
+import { ToastContainer, toast } from 'react-toastify';
 import { useCreateUserMutation } from './userApi';
 import { setCredentials } from '../authorization/authorizationSlice';
 import 'react-toastify/dist/ReactToastify.css';
@@ -19,19 +19,9 @@ const schema = object().shape({
 const Register = () => {
   const dispatch = useDispatch();
   const [createUser, { isLoading }] = useCreateUserMutation();
-  const [user, setUser] = useState({ name: '', email: '', password: '' });
-  const { register, watch, reset, handleSubmit } = useForm({ resolver: yupResolver(schema) });
+  const { register, handleSubmit, reset } = useForm({ resolver: yupResolver(schema) });
 
-  useEffect(() => {
-    const subscription = watch((value) => {
-      if (value.email && value.password) {
-        setUser(value);
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, [watch]);
-
-  const handleRegistration = async () => {
+  const handleRegistration = async (user) => {
     try {
       createUser({ user })
         .unwrap()
@@ -56,9 +46,7 @@ const Register = () => {
   return (
     <Container>
       <ToastContainer />
-      <Form.Label>
-        <h2>Log in</h2>
-      </Form.Label>
+      <h2 className="register-title">Registration form</h2>
       <Form onSubmit={handleSubmit(handleRegistration)}>
         <Form.Group className="mb-3" controlId="formGroupEmail">
           <Form.Label>Name Surname</Form.Label>
@@ -66,7 +54,7 @@ const Register = () => {
             className="form-control"
             placeholder="Name Surname"
             name="name"
-            type="name"
+            type="text"
             {...register('name', { required: true })}
           />
         </Form.Group>
