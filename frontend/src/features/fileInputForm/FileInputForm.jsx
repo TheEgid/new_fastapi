@@ -63,12 +63,10 @@ const FileInputForm = () => {
   };
 
   const getResult = () => {
-    let returnedData = '';
     let currentStatus;
     switch (status) {
       case 'fulfilled':
-        returnedData = data.filename;
-        currentStatus = 'Загружен файл ';
+        currentStatus = `Загружен файл ${data.filename}`;
         break;
       case 'pending':
         currentStatus = '';
@@ -83,7 +81,7 @@ const FileInputForm = () => {
     if (Object.keys(errors).length !== 0) {
       return errors.myFile?.message;
     }
-    return [currentStatus, returnedData];
+    return currentStatus;
   };
 
   const myFileField = register('myFile', { required: true });

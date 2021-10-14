@@ -1,4 +1,4 @@
-import { React, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { skipToken } from '@reduxjs/toolkit/query/react';
 import Navbar from 'react-bootstrap/Navbar';

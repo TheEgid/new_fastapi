@@ -1,9 +1,10 @@
-import { React } from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { string, object } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Container, Form, Button } from 'react-bootstrap';
+import { Container, Form, Button, InputGroup } from 'react-bootstrap';
+import { PersonBadge, Eye, EyeSlash, Mailbox } from 'react-bootstrap-icons';
 import { ToastContainer, toast } from 'react-toastify';
 import { useCreateUserMutation } from './userApi';
 import { setCredentials } from '../authorization/authorizationSlice';
@@ -16,10 +17,20 @@ const schema = object().shape({
   password: string().required().min(6).max(128),
 });
 
+const offeye = <EyeSlash width="26" height="26" />;
+const eye = <Eye width="26" height="26" />;
+const mailbox = <Mailbox width="26" height="26" />;
+const person = <PersonBadge width="26" height="26" />;
+
 const Register = () => {
   const dispatch = useDispatch();
   const [createUser, { isLoading }] = useCreateUserMutation();
   const { register, handleSubmit, reset } = useForm({ resolver: yupResolver(schema) });
+
+  const [passwordShow, setPasswordShow] = useState(false);
+  const togglePasswordShow = () => {
+    setPasswordShow(!passwordShow);
+  };
 
   const handleRegistration = async (user) => {
     try {
@@ -46,37 +57,50 @@ const Register = () => {
   return (
     <Container>
       <ToastContainer />
-      <h2 className="register-title">Registration form</h2>
+      <Form.Label>
+        <h2>Registration form</h2>
+      </Form.Label>
       <Form onSubmit={handleSubmit(handleRegistration)}>
         <Form.Group className="mb-3" controlId="formGroupEmail">
           <Form.Label>Name Surname</Form.Label>
-          <Form.Control
-            className="form-control"
-            placeholder="Name Surname"
-            name="name"
-            type="text"
-            {...register('name', { required: true })}
-          />
+          <InputGroup>
+            <InputGroup.Text> {person} </InputGroup.Text>
+            <Form.Control
+              className="form-control"
+              placeholder="Name Surname"
+              name="name"
+              type="text"
+              {...register('name', { required: true })}
+            />
+          </InputGroup>
         </Form.Group>
         <Form.Group className="mb-3" controlId="formGroupEmail">
           <Form.Label>Email address</Form.Label>
-          <Form.Control
-            className="form-control"
-            placeholder="Email address"
-            name="email"
-            type="email"
-            {...register('email', { required: true })}
-          />
+          <InputGroup>
+            <InputGroup.Text> {mailbox} </InputGroup.Text>
+            <Form.Control
+              className="form-control"
+              placeholder="Email address"
+              name="email"
+              type="email"
+              {...register('email', { required: true })}
+            />
+          </InputGroup>
         </Form.Group>
         <Form.Group className="mb-3" controlId="formGroupPassword">
           <Form.Label>Password</Form.Label>
-          <Form.Control
-            className="form-control"
-            placeholder="Password"
-            name="password"
-            type="password"
-            {...register('password', { required: true })}
-          />
+          <InputGroup>
+            <InputGroup.Text onClick={togglePasswordShow}>
+              {passwordShow ? eye : offeye}
+            </InputGroup.Text>
+            <Form.Control
+              className="form-control"
+              placeholder="Password"
+              type={passwordShow ? 'text' : 'password'}
+              name="password"
+              {...register('password', { required: true })}
+            />
+          </InputGroup>
         </Form.Group>
         <Button variant="secondary" type="submit" disabled={isLoading}>
           {isLoading ? <Spinner /> : 'Submit'}
