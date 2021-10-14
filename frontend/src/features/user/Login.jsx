@@ -12,7 +12,7 @@ import Spinner from '../../components/Spinner';
 
 const schema = object().shape({
   email: string().email().required(),
-  password: string().required(),
+  password: string().required().min(6).max(128),
 });
 
 const Login = () => {
