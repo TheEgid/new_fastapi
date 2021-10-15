@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { mixed, object } from 'yup';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
+import { useFetchCurrentUserQuery } from '../user/userApi';
 import { useAddCustomFileMutation, useAddFileDataMutation } from './fileInputFormFileApi';
 import Spinner from '../../components/Spinner';
+
 
 const schema = object().shape({
   myFile: mixed()
@@ -27,24 +29,24 @@ const FileInputForm = () => {
     register,
     handleSubmit,
     formState: { errors },
-    getValues,
     reset,
   } = useForm({
     resolver: yupResolver(schema),
   });
 
   const [content, setContent] = useState();
-
-  const [AddCustomFile, { data, status, isLoading }] = useAddCustomFileMutation();
+  const [AddCustomFile, { data, status, isSuccess, isLoading }] = useAddCustomFileMutation();
   const [AddFileData] = useAddFileDataMutation();
 
   const canSave = !!content && !isLoading;
   const isPending = status === 'pending';
 
-  const onUploadFileClicked = async () => {
-    const inputFile = getValues('myFile')[0];
-    const formData = new FormData();
+  const currentUser = useFetchCurrentUserQuery();
 
+  const onUploadFileClicked = async (mydata) => {
+    const inputFile = mydata.myFile[0];
+
+    const formData = new FormData();
     if (canSave && typeof inputFile !== 'undefined') {
       try {
         formData.append('customfile', inputFile, inputFile.name);
@@ -53,6 +55,7 @@ const FileInputForm = () => {
           filename: returned.filename,
           content: returned.content,
           type: returned.type,
+          email: currentUser.data.email,
         });
       } catch (err) {
         // eslint-disable-next-line no-console
@@ -62,30 +65,42 @@ const FileInputForm = () => {
     reset();
   };
 
-  const getResult = () => {
-    let currentStatus;
-    switch (status) {
-      case 'fulfilled':
-        currentStatus = `Загружен файл ${data.filename}`;
-        break;
-      case 'pending':
-        currentStatus = '';
-        break;
-      case 'rejected':
-        currentStatus = 'Ошибка сервера';
-        break;
-      default:
-        currentStatus = 'Ждём загрузку файла';
-        break;
-    }
-    if (Object.keys(errors).length !== 0) {
-      return errors.myFile?.message;
-    }
-    return currentStatus;
+  const inputFileName = data ? data.filename : '';
+
+  const statusMap = (externalStatus) =>
+    ({
+      pending: ' ',
+      rejected: 'Ошибка сервера',
+      fulfilled: `Последний загруженный файл: ${inputFileName}`,
+    }[externalStatus]);
+
+  let currentStatus = statusMap(status) || '';
+
+  if (Object.keys(errors).length !== 0) {
+    currentStatus = errors.myFile?.message;
+  }
+
+  const DelayedSuccessStatus = () => {
+    const [isShown, setlsShown] = useState(true);
+    const waitBeforeShow = isSuccess ? 5000 : 0;
+    useEffect(() => {
+      setTimeout(() => {
+        setlsShown(false);
+      }, waitBeforeShow);
+    }, [waitBeforeShow]);
+    return isShown === true ? currentStatus : 'Ждём загрузку файла';
   };
 
-  const myFileField = register('myFile', { required: true });
-  const onContentChanged = (e) => setContent(e.target.value);
+  const onContentChanged = (e) => {
+    e.preventDefault();
+    setContent(e.target.value);
+  };
+
+  const CurrentStatusWrapper = () => (
+    <DelayedSuccessStatus>
+      <strong>{currentStatus}</strong>
+    </DelayedSuccessStatus>
+  );
 
   return (
     <div>
@@ -96,23 +111,20 @@ const FileInputForm = () => {
           </Form.Label>
           <Form>
             <input
-              name="FileInput"
+              name="fileItem"
               className="form-control"
               disabled={isPending}
               style={isPending ? { color: `transparent` } : {}}
               accept=".pdf"
-              id="fileItem"
               type="file"
-              {...myFileField}
+              {...register('myFile', { required: true })}
               onChange={(e) => {
                 onContentChanged(e);
               }}
             />
             <Card.Subtitle style={{ marginTop: '20px', marginBottom: '10px' }}>
               {isPending && <Spinner height={40} width={40} />}
-              <div>
-                <strong>{getResult()}</strong>
-              </div>
+              <CurrentStatusWrapper />
             </Card.Subtitle>
             <Button
               variant="info"
