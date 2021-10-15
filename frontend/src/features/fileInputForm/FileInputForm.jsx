@@ -44,7 +44,7 @@ const FileInputForm = () => {
 
   const canSave = !!content && !isLoading;
   const isPending = status === 'pending';
-  
+
   const elm = document.getElementById('current_user_name');
   const hiddenUser = elm ? hideEmail(elm.innerText) : 'Anonymous';
 

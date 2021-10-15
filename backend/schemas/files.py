@@ -9,6 +9,7 @@ class FileModel(BaseModel):
     type: str
     user_hidden_name: str
 
+
 class FileDetailsModel(FileModel):
     """ Return response data """
     id: int
