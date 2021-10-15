@@ -1,7 +1,7 @@
 from schemas.files import FileDetailsModel, FileModel
-# from schemas.users import User
+from schemas.users import User
 from utils import files as files_utils
-# from utils.dependencies import get_current_user
+from utils.dependencies import get_current_user
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from database import get_db_session

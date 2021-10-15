@@ -7,10 +7,9 @@ class FileModel(BaseModel):
     filename: str
     content: str
     type: str
-
+    user_hidden_name: str
 
 class FileDetailsModel(FileModel):
     """ Return response data """
     id: int
     created_at: datetime
-    # user_name: str

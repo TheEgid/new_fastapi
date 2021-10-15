@@ -4,9 +4,11 @@ from schemas import files as file_schema
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-async def create_file(file: file_schema.FileModel, session: AsyncSession):
+async def create_file(file: file_schema.FileModel,
+                      session: AsyncSession):
     query = (
         files_table.insert().values(
+            user_hidden_name=file.user_hidden_name,
             filename=file.filename,
             content=file.content,
             type=file.type,
@@ -17,6 +19,7 @@ async def create_file(file: file_schema.FileModel, session: AsyncSession):
             files_table.c.content,
             files_table.c.type,
             files_table.c.created_at,
+            files_table.c.user_hidden_name,
         )
     )
     _file = await session.execute(query)

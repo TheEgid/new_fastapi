@@ -5,10 +5,8 @@ import { mixed, object } from 'yup';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
-import { useFetchCurrentUserQuery } from '../user/userApi';
 import { useAddCustomFileMutation, useAddFileDataMutation } from './fileInputFormFileApi';
 import Spinner from '../../components/Spinner';
-
 
 const schema = object().shape({
   myFile: mixed()
@@ -23,6 +21,12 @@ const schema = object().shape({
       return true;
     }),
 });
+
+const hideEmail = (myemail) => {
+  const hideWord = (mystr) => mystr[0] + '*'.repeat(3) + mystr.slice(-1);
+  const myarr = myemail.split('@');
+  return `${hideWord(myarr[0])}@${hideWord(myarr[1])}`;
+};
 
 const FileInputForm = () => {
   const {
@@ -40,12 +44,12 @@ const FileInputForm = () => {
 
   const canSave = !!content && !isLoading;
   const isPending = status === 'pending';
-
-  const currentUser = useFetchCurrentUserQuery();
+  
+  const elm = document.getElementById('current_user_name');
+  const hiddenUser = elm ? hideEmail(elm.innerText) : 'Anonymous';
 
   const onUploadFileClicked = async (mydata) => {
     const inputFile = mydata.myFile[0];
-
     const formData = new FormData();
     if (canSave && typeof inputFile !== 'undefined') {
       try {
@@ -55,7 +59,7 @@ const FileInputForm = () => {
           filename: returned.filename,
           content: returned.content,
           type: returned.type,
-          email: currentUser.data.email,
+          user_hidden_name: hiddenUser,
         });
       } catch (err) {
         // eslint-disable-next-line no-console

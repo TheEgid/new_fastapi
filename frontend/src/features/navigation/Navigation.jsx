@@ -65,7 +65,7 @@ const Navigation = () => {
             {isLoggedIn ? (
               <Nav>
                 <Navbar.Text className="nav-title">
-                  Вы вошли как <strong>{name}</strong>
+                  Вы вошли как <strong id="current_user_name">{name}</strong>
                 </Navbar.Text>
                 <Button
                   type="button"
