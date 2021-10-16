@@ -107,6 +107,7 @@ def get_file_content(file_path):
         lst = []
         for paragraph in doc.paragraphs[:25]:
             lst.append(filter_paragraph(filter_nonprintable(paragraph.text)))
-        return " ".join(lst).strip()[:1000]
+        mystring = " ".join(lst).strip()[:1000]
+        return re.sub(r'\s+', ' ', mystring)
     except PackageNotFoundError:
-        return ""
+        return "File error | Content error"

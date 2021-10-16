@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { mixed, object } from 'yup';
@@ -7,6 +7,7 @@ import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 import { useAddCustomFileMutation, useAddFileDataMutation } from './fileInputFormFileApi';
 import Spinner from '../../components/Spinner';
+import Delayed from '../../components/Delayed';
 
 const schema = object().shape({
   myFile: mixed()
@@ -22,12 +23,6 @@ const schema = object().shape({
     }),
 });
 
-const hideEmail = (myemail) => {
-  const hideWord = (mystr) => mystr[0] + '*'.repeat(3) + mystr.slice(-1);
-  const myarr = myemail.split('@');
-  return `${hideWord(myarr[0])}@${hideWord(myarr[1])}`;
-};
-
 const FileInputForm = () => {
   const {
     register,
@@ -39,18 +34,26 @@ const FileInputForm = () => {
   });
 
   const [content, setContent] = useState();
-  const [AddCustomFile, { data, status, isSuccess, isLoading }] = useAddCustomFileMutation();
+  const [fileLoadReady, setFileLoadReady] = useState(false);
+  const [AddCustomFile, { data, status, isLoading }] = useAddCustomFileMutation();
   const [AddFileData] = useAddFileDataMutation();
 
   const canSave = !!content && !isLoading;
   const isPending = status === 'pending';
 
-  const elm = document.getElementById('current_user_name');
-  const hiddenUser = elm ? hideEmail(elm.innerText) : 'Anonymous';
+  const documentUserName = document.getElementById('current_user_name');
+  const hiddenUser = documentUserName ? documentUserName.innerText : 'Anonymous';
+
+  const onContentChanged = (e) => {
+    e.preventDefault();
+    setFileLoadReady(true);
+    setContent(e.target.value);
+  };
 
   const onUploadFileClicked = async (mydata) => {
     const inputFile = mydata.myFile[0];
     const formData = new FormData();
+    setFileLoadReady(false);
     if (canSave && typeof inputFile !== 'undefined') {
       try {
         formData.append('customfile', inputFile, inputFile.name);
@@ -70,40 +73,25 @@ const FileInputForm = () => {
   };
 
   const inputFileName = data ? data.filename : '';
+  const statusMock = 'Ждём загрузку файла';
 
   const statusMap = (externalStatus) =>
-    ({
-      pending: ' ',
-      rejected: 'Ошибка сервера',
-      fulfilled: `Последний загруженный файл: ${inputFileName}`,
-    }[externalStatus]);
+    ({ pending: ' ', rejected: 'Ошибка сервера', fulfilled: `Загружен файл ${inputFileName}` }[
+      externalStatus
+    ]);
 
-  let currentStatus = statusMap(status) || '';
+  let currentStatus = statusMap(status) || statusMock;
 
-  if (Object.keys(errors).length !== 0) {
+  if (Object.keys(errors).length === 0) {
+    currentStatus = fileLoadReady === true ? statusMock : currentStatus;
+  } else {
     currentStatus = errors.myFile?.message;
   }
 
-  const DelayedSuccessStatus = () => {
-    const [isShown, setlsShown] = useState(true);
-    const waitBeforeShow = isSuccess ? 5000 : 0;
-    useEffect(() => {
-      setTimeout(() => {
-        setlsShown(false);
-      }, waitBeforeShow);
-    }, [waitBeforeShow]);
-    return isShown === true ? currentStatus : 'Ждём загрузку файла';
-  };
-
-  const onContentChanged = (e) => {
-    e.preventDefault();
-    setContent(e.target.value);
-  };
-
   const CurrentStatusWrapper = () => (
-    <DelayedSuccessStatus>
-      <strong>{currentStatus}</strong>
-    </DelayedSuccessStatus>
+    <Delayed mock={statusMock} waitBeforeShow={5000}>
+      <div>{currentStatus}</div>
+    </Delayed>
   );
 
   return (
